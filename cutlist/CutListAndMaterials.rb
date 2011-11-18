@@ -119,6 +119,7 @@
 #                            Parts should only be compacted if they are truly the same ( same name, same dimensions, same material) - affects compact list, CLP - ok
 #                4.1.0.6     File organization refactor. Split into multiple files. Add cutlist.rb to plugins directory, all other files are not in cutlist directory - ok
 #                            Add the much awaited ability to list parts by sub-assembly. Compact list does not show sub-assemblies. GUI label changes - ok
+#                4.1.2      Nov 11, 2011 Fixed issue with kerf sizes not working properly on layout Did not reserve kerf space on layout - ok
 #-----------------------------------------------------------------------------
 
 require 'sketchup.rb'

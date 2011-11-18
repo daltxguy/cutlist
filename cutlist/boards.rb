@@ -637,6 +637,8 @@ class LayoutBoard
     #add a board whhich is kerfSize wider and longer to account for kerfsize being added to the length and width of each part
     # so even if the part is exactly the width of the board requiring no cuts, it will fit
     @root.addLeft( {:xy =>topLeft,:length =>@board.getLength+@kerfSize,:width =>@board.getWidth+@kerfSize} )
+    #debug
+    puts "Kerf enhanced board size: length=" + (@board.getLength+@kerfSize).to_s + " width=" + (@board.getWidth+@kerfSize).to_s if $verbosePartPlacement
     @boardFull = false
   end
 
@@ -644,6 +646,7 @@ class LayoutBoard
   #layoutPart is an instance of LayoutPart
   def addPartToBoard(layoutPart)
     # now figure out where it should be placed on the board. Find enough room for the part + kerfsize on one edge of the width and one on the length
+    
     leafNode = findBestFit(@root, layoutPart.getLength+@kerfSize, layoutPart.getWidth+@kerfSize)
     # return if we couldn't fit this part
     return false if leafNode == nil
@@ -656,16 +659,20 @@ class LayoutBoard
     @partInBoardList.add(layoutPart)
 
     # mark the space used by this part as taken and adjust the tree of available space
-    insertPartInTree(leafNode,layoutPart)
-    puts "part added!" if $verbose
+    # The space used on the layout board must include any kerf rquired, so we insert a part which is the layoutPart size enhanced by the kerf sizes
+    insertPartInTree(leafNode,{:xy => leafNode.rect[:xy], :length => layoutPart.getLength+@kerfSize, :width => layoutPart.getWidth+@kerfSize })
+    puts "part added!" if $verbosePartPlacement
     return true
   end
   
   def insertPartInTree(leaf,layoutPart)
     # insert this part into the node of our parent
+    # layoutPart must represent the actual space used on the board, not necessarily the actual part size
     #leaf.parent.addPart( {:xy => leaf.rect[:xy], :length => layoutPart.getLengthPx, :width => layoutPart.getWidthPx } )
-    leaf.parent.addPart( {:xy => leaf.rect[:xy], :length => layoutPart.getLength, :width => layoutPart.getWidth } )
-    
+    leaf.parent.addPart( layoutPart )
+    #debug
+    puts "Adding part at location:[" +  (leaf.rect[:xy][0]).to_s + "," + (leaf.rect[:xy][1]).to_s + "]" + 
+           " length=" + (layoutPart[:length]).to_l.to_s + " width=" +  (layoutPart[:width]).to_l.to_s if $verbosePartPlacement
     
     #remove the branch not chosen from the parent and link in a new Node on the branch chosen
     # figure out if we are the right or left node and delete the other one - we dont need it anymore cause it wasn't chosen
@@ -699,13 +706,13 @@ class LayoutBoard
     # left node is the horizontal spaces remaining
     # if width remaining is 0, then we don't need a left node
     #newWidth = leaf.rect[:width] - layoutPart.getWidthPx
-    newWidth = leaf.rect[:width] - layoutPart.getWidth
+    newWidth = leaf.rect[:width] - layoutPart[:width]
     if newWidth != 0
       # x remains the same since the part is placed in top left corner
       # y is old y + layout part width + kerf size
       newx = leaf.rect[:xy][0]
       #newy = leaf.rect[:xy][1]+layoutPart.getWidthPx
-      newy = leaf.rect[:xy][1]+layoutPart.getWidth
+      newy = leaf.rect[:xy][1]+layoutPart[:width]
       newLength = leaf.rect[:length]
       # create and add a new left node to the node just created
       newOrigin = Array[newx,newy]
@@ -714,15 +721,15 @@ class LayoutBoard
     
     # right node is the other horizontal space remaining to the right of the part placed - the upper horizontal space
     #newLength = leaf.rect[:length] - layoutPart.getLengthPx
-    newLength = leaf.rect[:length] - layoutPart.getLength
+    newLength = leaf.rect[:length] - layoutPart[:length]
     if newLength != 0
       # y remains the same since the part is placed in the top left corner - this space is immediately to the right of it
       # x is old x + layout part length
       newy = leaf.rect[:xy][1]
       #newx = leaf.rect[:xy][0]+layoutPart.getLengthPx
-      newx = leaf.rect[:xy][0]+layoutPart.getLength
+      newx = leaf.rect[:xy][0]+layoutPart[:length]
       #newWidth = layoutPart.getWidthPx
-      newWidth = layoutPart.getWidth
+      newWidth = layoutPart[:width]
       # create and add a new left node to the node just created
       newOrigin = Array[newx,newy]
       newLeftChild.addRight({:xy => newOrigin, :length => newLength, :width => newWidth})
@@ -732,15 +739,15 @@ class LayoutBoard
     #right node is the vertical spaces remaining
     # if width remaining is 0, then we don't need a left node
     #newWidth = leaf.rect[:width] - layoutPart.getWidthPx
-    newWidth = leaf.rect[:width] - layoutPart.getWidth
+    newWidth = leaf.rect[:width] - layoutPart[:width]
     if newWidth != 0
       # x remains the same since the part is placed in top left corner
       # y is old y + layout part width
       newx = leaf.rect[:xy][0]
       #newy = leaf.rect[:xy][1]+layoutPart.getWidthPx
-      newy = leaf.rect[:xy][1]+layoutPart.getWidth
+      newy = leaf.rect[:xy][1]+layoutPart[:width]
       #newLength = layoutPart.getLengthPx
-      newLength = layoutPart.getLength
+      newLength = layoutPart[:length]
       # create and add a new left node to the node just created
       newOrigin = Array[newx,newy]
       newRightChild.addLeft({:xy => newOrigin, :length => newLength, :width => newWidth})
@@ -748,13 +755,13 @@ class LayoutBoard
     
     # right node of the right child is the right vertical space to the right of the part placed 
     #newLength = leaf.rect[:length] - layoutPart.getLengthPx
-    newLength = leaf.rect[:length] - layoutPart.getLength
+    newLength = leaf.rect[:length] - layoutPart[:length]
     if newLength != 0
       # y remains the same since the part is placed in top left corner
       # x is old x + layout part length
       newy = leaf.rect[:xy][1]
       #newx = leaf.rect[:xy][0]+layoutPart.getLengthPx
-      newx = leaf.rect[:xy][0]+layoutPart.getLength
+      newx = leaf.rect[:xy][0]+layoutPart[:length]
       newWidth = leaf.rect[:width]
       # create and add a new left node to the node just created
       newOrigin = Array[newx,newy]
