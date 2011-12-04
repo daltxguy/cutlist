@@ -143,10 +143,11 @@ class ClpFileOutputDriver < FileOutputDriver
         @sheet = ClpSheet.new(@renderer,@showVolumeInMetric)
       end
     end # showSheet
-    
-    #if @showParts
-    #  @part = CompactPart.new(@renderer,@showVolumeInMetric)
-    #end
+  
+    # Add parts to CLP csv file
+    if @showParts
+      @part = CompactClpPart.new(@renderer,@showVolumeInMetric)
+    end
   end
   
   def displayResults

@@ -8,7 +8,7 @@ class GuiBase
   end
   
   #base title used for all html pages - to indicate the version of cutlist being used.
-  @@title = "Cut List v4.1.2"
+  @@title = "Cut List v4.1.3"
   
   # relative location of the cutlist input html page
   @@cutlistui_location = '/cutlistui.html'

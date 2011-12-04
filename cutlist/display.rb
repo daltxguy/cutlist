@@ -217,8 +217,10 @@ class CompactComponent < Component
             ( c.getWidthString     == lastPart[2] ) &&
             ( c.getThicknessString == lastPart[3] ) &&
             ( c.getMaterial        == lastPart[4] ) )
+        #puts "parts matched " + c.getName + " len=" + c.getLength.to_s  + " " + c.getWidth.to_s + " " + c.getThickness.to_s + " " + c.getMaterial
         partCount = partCount + 1
       elsif(lastPart != firstPart)
+        #puts "parts did not match " + c.getName + " len=" + c.getLength.to_s  + " " + c.getWidth.to_s + " " + c.getThickness.to_s + " " + c.getMaterial
         component = component + row
         partId = partId + 1
         partCount = 1
@@ -556,6 +558,45 @@ class CompactClpSheet < CompactClpComponent
   end
 
 end ##class CompactClpSheet
+
+#########################
+# CompactClpPart       #
+#########################
+class CompactClpPart < CompactClpComponent
+
+  def getPartPrefix()
+    return "P-"
+  end
+
+  def getMaterialType()
+    return "HW"
+  end
+  
+  def processRows(inList)
+
+    component=""
+    cols = Array.new
+
+    if(inList.parts.length > 0)
+      for p in 0..(inList.parts.length-1)
+        cols[0]= getPartPrefix()+(p+1).to_fws(3)
+	cols[1] = "" 					#subAssemblyName
+        cols[2] = ""					# description
+        cols[3] = inList.partCount[p].to_s		# copies
+	cols[4] = ""					# T
+	cols[5] = ""					# W
+	cols[6] = ""					# L
+	cols[7] = getMaterialType()			# material type
+	cols[8]=  inList.parts[p]			# material name - in CLP, material name is actually the description for HW parts
+	cols[9] = "yes"					# can rotate
+        component = component + getRow(cols)
+      end  ###for
+    end ###if
+    return component
+
+  end ## end processRows
+
+end ##class CompactClpPart
 
 #########################
 # Sheet                 #

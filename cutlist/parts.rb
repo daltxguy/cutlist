@@ -1,6 +1,14 @@
 #-----------------------------------------------------------------------------
 # Class PartList - holds all selected components which are neither a 
 # solid part nor a sheet part - typically this would be hardware...or bryce
+# Only the minimal amount of data is kept for parts at this time.
+# The following is the structure for a hardware parts list
+#  parts - array of all unique hardware part names ( only the name is stored)
+#  partCount - array of counts of each unique hardware part
+#
+# Note: since only this data is kept only these two fields can be included in any
+# output. If any other attribute is required, then the array will have to contain a
+# class which contains the other attributes desired ( eg, dimensions, material etc)
 #-----------------------------------------------------------------------------
 class PartList
 
@@ -19,6 +27,9 @@ class PartList
   end ###def partCount
 
   ### Adds a part to the list.
+  # search the part array for a part existing with same name 
+  # if it exists, increment the number of those type of parts
+  # otherwise, add a new part to the part array and initialize the count of these parts to 1
   def add(inPart)
     index = @parts.index(inPart)
     if(index != nil)

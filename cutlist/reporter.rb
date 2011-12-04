@@ -636,7 +636,7 @@ def output
       cutlistClpFile = ClpFileOutputDriver.new(@@options[:cutlist_Options][:compactList],
                                                             @@options[:cutlist_Options][:showComps],
                                                             @@options[:cutlist_Options][:showSheet],
-                                                            false,
+                                                            @@options[:cutlist_Options][:showParts],
                                                             @volumeMeasureInMetric,
                                                             @solidPartList,
                                                             @sheetPartList,

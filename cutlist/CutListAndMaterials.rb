@@ -120,7 +120,8 @@
 #                4.1.0.6     File organization refactor. Split into multiple files. Add cutlist.rb to plugins directory, all other files are not in cutlist directory - ok
 #                            Add the much awaited ability to list parts by sub-assembly. Compact list does not show sub-assemblies. GUI label changes - ok
 #                4.1.2      Nov 11, 2011 Fixed issue with kerf sizes not working properly on layout Did not reserve kerf space on layout - ok
-#-----------------------------------------------------------------------------
+#                4.1.3      Dec 4, 2011. Add output of parts in the CLP csv file in the format suggested by Todd Peterson - ok
+#------------------------------------------------------------------------------------------
 
 require 'sketchup.rb'
 load 'cutlist/reporter.rb'  # this is the 'main' and is invoked from cutlist.rb in the plugins directory
