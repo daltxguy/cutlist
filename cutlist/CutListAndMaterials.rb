@@ -131,7 +131,7 @@ load 'cutlist/reporter.rb'  # this is the 'main' and is invoked from cutlist.rb 
 # determine amount of debugging output to the ruby console
 $verbose1 = false # minimal progress tracking
 $verbose = false # the whole enchilada - slows down processing considerably - may crash sketchup - use sparingly. turn $verbose on around desired areas
-$verboseComponentDiscovery = true # trace model entity list traversal only
+$verboseComponentDiscovery = false # trace model entity list traversal only
 $verbosePartPlacement = false #trace parts placement for layout only
 $verboseParameters = false # trace parameter passing to/from the GUI
 
