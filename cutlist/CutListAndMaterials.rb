@@ -1,6 +1,6 @@
 #-----------------------------------------------------------------------------
 #
-# Copyright 2006-2010 daltxguy, Vendmr
+# Copyright 2006-2012 daltxguy, Vendmr
 # Based on CutList.rb, Copyright 2005, CptanPanic
 #
 # Permission to use, copy, modify, and distribute this software for
@@ -121,6 +121,7 @@
 #                            Add the much awaited ability to list parts by sub-assembly. Compact list does not show sub-assemblies. GUI label changes - ok
 #                4.1.2      Nov 11, 2011 Fixed issue with kerf sizes not working properly on layout Did not reserve kerf space on layout - ok
 #                4.1.3      Dec 4, 2011. Add output of parts in the CLP csv file in the format suggested by Todd Peterson - ok
+#                4.1.4      Jan 13, 2012 Compact component display sometimes does not consolidate  correctly - and some class name cleanup
 #------------------------------------------------------------------------------------------
 
 require 'sketchup.rb'
@@ -130,7 +131,7 @@ load 'cutlist/reporter.rb'  # this is the 'main' and is invoked from cutlist.rb 
 # determine amount of debugging output to the ruby console
 $verbose1 = false # minimal progress tracking
 $verbose = false # the whole enchilada - slows down processing considerably - may crash sketchup - use sparingly. turn $verbose on around desired areas
-$verboseComponentDiscovery = false # trace model entity list traversal only
+$verboseComponentDiscovery = true # trace model entity list traversal only
 $verbosePartPlacement = false #trace parts placement for layout only
 $verboseParameters = false # trace parameter passing to/from the GUI
 

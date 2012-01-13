@@ -30,26 +30,28 @@ class OutputDriver
     
     if(@showComps)
       if (@compact)
-        @component = CompactComponent.new(@renderer,@showVolumeInMetric)
+        @component = CompactDisplay.new(@renderer,@showVolumeInMetric)
 #	compact list is sorted by component names
         @solidParts.sortByName
+	puts "OutputDriver::openParts - Sorting solid parts by name"
       else
-        @component = Component.new(@renderer,@showVolumeInMetric)
+        @component = Display.new(@renderer,@showVolumeInMetric)
       end
     end # showComps
     
     if (@showSheet)
       if (@compact)
-        @sheet = CompactSheet.new(@renderer,@showVolumeInMetric)
+        @sheet = CompactDisplaySheet.new(@renderer,@showVolumeInMetric)
 #	compact list is sorted by component names
         @sheetParts.sortByName
+	puts "OutputDriver::openParts - Sorting sheet parts by name"
       else
-        @sheet = Sheet.new(@renderer,@showVolumeInMetric)
+        @sheet = DisplaySheet.new(@renderer,@showVolumeInMetric)
       end
     end # showSheet
     
     if @showParts
-      @part = CompactPart.new(@renderer,@showVolumeInMetric)
+      @part = CompactDisplayPart.new(@renderer,@showVolumeInMetric)
     end
     
   end # openParts
@@ -121,7 +123,7 @@ class FileOutputDriver < OutputDriver
 end
 
 #-----------------------------------------------------------------------------
-# output driver for cutlist plus output
+# output driver for cutlist plus output - a file based csv
 #-----------------------------------------------------------------------------
 class ClpFileOutputDriver < FileOutputDriver
   # perform necessary rendering to produce requested output format
@@ -130,23 +132,27 @@ class ClpFileOutputDriver < FileOutputDriver
     
     if(@showComps)
       if (@compact)
-        @component = CompactClpComponent.new(@renderer,@showVolumeInMetric)
+        @component = CompactClpDisplay.new(@renderer,@showVolumeInMetric)
+        @solidParts.sortByName
+	puts "ClpFileOutputDriver::openParts - Solid parts - sorting by name"
       else
-        @component = ClpComponent.new(@renderer,@showVolumeInMetric)
+        @component = ClpDisplay.new(@renderer,@showVolumeInMetric)
       end
     end # showComps
     
     if (@showSheet)
       if (@compact)
-        @sheet = CompactClpSheet.new(@renderer,@showVolumeInMetric)
+        @sheet = CompactClpDisplaySheet.new(@renderer,@showVolumeInMetric)
+        @sheetParts.sortByName
+	puts "ClpFileOutputDriver::openParts - Sheet parts - sorting by name"
       else
-        @sheet = ClpSheet.new(@renderer,@showVolumeInMetric)
+        @sheet = ClpDisplaySheet.new(@renderer,@showVolumeInMetric)
       end
     end # showSheet
   
     # Add parts to CLP csv file
     if @showParts
-      @part = CompactClpPart.new(@renderer,@showVolumeInMetric)
+      @part = CompactClpDisplayPart.new(@renderer,@showVolumeInMetric)
     end
   end
   

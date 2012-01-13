@@ -1,15 +1,22 @@
 #-----------------------------------------------------------------------------
 # Class PartList - holds all selected components which are neither a 
-# solid part nor a sheet part - typically this would be hardware...or bryce
+# solid part nor a sheet part - typically this would be hardware...or things like bryce
+#  if you include him in your model
 # Only the minimal amount of data is kept for parts at this time.
 # The following is the structure for a hardware parts list
 #  parts - array of all unique hardware part names ( only the name is stored)
 #  partCount - array of counts of each unique hardware part
 #
 # Note: since only this data is kept only these two fields can be included in any
-# output. If any other attribute is required, then the array will have to contain a
-# class which contains the other attributes desired ( eg, dimensions, material etc)
-#-----------------------------------------------------------------------------
+# output. If any other attribute is required, then a Part class should be created
+# and the PartList would become an array of Part objects  much as we do with 
+# SolidPartList and SheetPartList
+# The part class could contain other attributes desired ( eg, dimensions, material etc)
+# but probably would not need to be as complex as SolidPart and SheetPart since
+# normally we just display a list of these.
+# For example you might want to know that a knob is made of brass or oak.
+# For now, this could be embedded into your part name.
+#----------------------------------------------------------------------------------
 class PartList
 
   ### Constructor

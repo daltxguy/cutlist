@@ -1,7 +1,7 @@
 #########################
-# Thing superclass      #
+# Display_class superclass      #
 #########################
-class Thing
+class Display_class
 
   def initialize(inRenderer, inMetric)
     @renderer = inRenderer
@@ -35,12 +35,12 @@ class Thing
   def to_s(inList)
   end ## end to_s
 
-end ##class Thing
+end ##Display_class
 
 #########################
-# Component             #
+# Display                                              #
 #########################
-class Component < Thing
+class Display < Display_class
   
   def initialize(inRenderer, inMetric)
     super(inRenderer, inMetric)
@@ -182,12 +182,12 @@ class Component < Thing
 
   end ## end to_s
 
-end ##class Component
+end ##Display class
 
 #########################
-# CompactComponent      #
+# CompactDisplay                                   #
 #########################
-class CompactComponent < Component
+class CompactDisplay < Display
 
   def getHeadingArray()
     #headings=["Part#","Quantity","Sub-Assembly","Description","Length(L)","Width(W)","Thickness(T)",@measureLabel + " (per)",
@@ -217,10 +217,10 @@ class CompactComponent < Component
             ( c.getWidthString     == lastPart[2] ) &&
             ( c.getThicknessString == lastPart[3] ) &&
             ( c.getMaterial        == lastPart[4] ) )
-        #puts "parts matched " + c.getName + " len=" + c.getLength.to_s  + " " + c.getWidth.to_s + " " + c.getThickness.to_s + " " + c.getMaterial
+        puts "parts matched " + c.getName + " l=" + c.getLength.to_s  + " w=" + c.getWidth.to_s + " t=" + c.getThickness.to_s + " m=" + c.getMaterial
         partCount = partCount + 1
       elsif(lastPart != firstPart)
-        #puts "parts did not match " + c.getName + " len=" + c.getLength.to_s  + " " + c.getWidth.to_s + " " + c.getThickness.to_s + " " + c.getMaterial
+        puts "parts did not match " + c.getName + " l=" + c.getLength.to_s  + " w=" + c.getWidth.to_s + " t=" + c.getThickness.to_s + " m=" + c.getMaterial
         component = component + row
         partId = partId + 1
         partCount = 1
@@ -264,13 +264,13 @@ class CompactComponent < Component
   end ## end processRows
 
 
-end ##class CompactComponent
+end ##class CompactDisplay
 
 #-----------------------------------------------------------------------------
 #########################
 # CompactPart           #
 #########################
-class CompactPart < CompactComponent
+class CompactDisplayPart < CompactDisplay
 
   def getPartPrefix()
     return "P-"
@@ -319,14 +319,14 @@ class CompactPart < CompactComponent
   end ## end processRows
 
 
-end ## CompactPart
+end ## CompactDisplayPart
 
 
 
 #########################
-# CompactSheet          #
+# CompactDisplaySheet                           #
 #########################
-class CompactSheet < CompactComponent
+class CompactDisplaySheet < CompactDisplay
   
   def getMeasureLabel
     if @metric
@@ -358,13 +358,13 @@ class CompactSheet < CompactComponent
     return "Sheet Materials"
   end
 
-end ##class CompactSheet
+end ##class CompactDisplaySheet
 
 
 #########################
-# ClpComponent          #
+# CutList PLus csv display                       #
 #########################
-class ClpComponent < Component
+class ClpDisplay < Display
 
   def getTitleName()
     return "";
@@ -436,12 +436,12 @@ class ClpComponent < Component
   end ## end processRows
 
 
-end ##class ClpComponent
+end ##class ClpDisplay
 
 #########################
-# ClpSheet              #
+# ClpDisplaySheet                                  #
 #########################
-class ClpSheet < ClpComponent
+class ClpDisplaySheet < ClpDisplay
 
   def getPartPrefix()
     return "S-"
@@ -451,13 +451,13 @@ class ClpSheet < ClpComponent
     return "SG"
   end
 
-end ##class ClpComponent
+end ##class ClpDisplaySheet
 
 
 #########################
-# CompactClpComponent   #
+# Compact CutList Plus csv                      #
 #########################
-class CompactClpComponent < CompactComponent
+class CompactClpDisplay < CompactDisplay
 
   def getTitleName()
     return "";
@@ -509,10 +509,10 @@ class CompactClpComponent < CompactComponent
             ( c.getWidth     == lastPart[3] )  &&
             ( c.getThickness == lastPart[4] )  &&
             ( c.getMaterial  == lastPart[5] )     )
-        #puts "parts matched " + c.getName + " len=" + c.getLength.to_s  + " " + c.getWidth.to_s + " " + c.getThickness.to_s + " " + c.getMaterial
+        puts "parts matched " + c.getName + " l=" + c.getLength.to_s  + " w=" + c.getWidth.to_s + " t=" + c.getThickness.to_s + " m=" + c.getMaterial
         partCount = partCount + 1
       elsif(lastPart != firstPart)
-        #xputs "parts did not match " + c.getName + " len=" + c.getLength.to_s  + " " + c.getWidth.to_s + " " + c.getThickness.to_s + " " + c.getMaterial
+        puts "parts did not match " + c.getName + " l=" + c.getLength.to_s  + " w=" + c.getWidth.to_s + " t=" + c.getThickness.to_s + " m=" + c.getMaterial
         component = component + row
         partId = partId + 1
         partCount = 1
@@ -541,13 +541,13 @@ class CompactClpComponent < CompactComponent
     return component
   end ## end processRows
 
-end ##class CompactClpComponent
+end ##class CompactClpDisplay
 
 
 #########################
-# CompactClpSheet       #
+# CompactClpDisplaySheet                       #
 #########################
-class CompactClpSheet < CompactClpComponent
+class CompactClpDisplaySheet < CompactClpDisplay
 
   def getPartPrefix()
     return "S-"
@@ -557,12 +557,12 @@ class CompactClpSheet < CompactClpComponent
     return "SG"
   end
 
-end ##class CompactClpSheet
+end ##class CompactClpDisplaySheet
 
 #########################
-# CompactClpPart       #
+# CompactClpDisplayPart                         #
 #########################
-class CompactClpPart < CompactClpComponent
+class CompactClpDisplayPart < CompactClpDisplay
 
   def getPartPrefix()
     return "P-"
@@ -596,12 +596,12 @@ class CompactClpPart < CompactClpComponent
 
   end ## end processRows
 
-end ##class CompactClpPart
+end ##class CompactClpDisplayPart
 
 #########################
-# Sheet                 #
+# DisplaySheet                                      #
 #########################
-class Sheet < Component
+class DisplaySheet < Display
   
   def getMeasureLabel
     if @metric
@@ -631,6 +631,6 @@ class Sheet < Component
     return "Sheet Materials"
   end
 
-end ##class Sheet
+end ##class DisplaySheet
 
 
