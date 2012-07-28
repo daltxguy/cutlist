@@ -69,9 +69,46 @@ class String
     #val = val.gsub(/[~]/,"")
   end
   
-  # cremove the '~' for csv text whether it is straight csv or csv for CLP
+  # 1, remove the '~' for csv text whether it is straight csv or csv for CLP
+  # 2, if a value is in a fraction form and less than 1, then it must be converted 
+  # to the format "0 y/z"
+  # so that programs like excel convert this to a decimal value instead of text or
+  # worse, a date
+  # Note: since CLP is also a csv file, it also gets this same conversion. Turns out
+  # this is a good thing because CLP has the same problem with fractions < 1 and
+  # the solution works for both Excel and CLP
   def to_csv
-    val = self.gsub(/[~]/,"")
+#   1. remove the ~
+#     puts "to_csv step 0 val=" + self
+     val = self.gsub(/[~]/,"")
+#     puts "to_csv step 1 val=" + val
+#   2. Determine if this field is a size is in the format "x y/z" and if x="", then insert a 0
+#   The pattern matches on any digits and spaces before a fraction, then the fraction which
+#   consists of any number of digits + "/" + any number of digits - (\d+\/\d+)
+#   (\D*) gobbles up the units at the end and the $ makes sure that the match is at the
+#   endof the string
+#   on a match, match[0] is always the entire match string and match[1..n] are the 
+#   matches of each block, delineated by the brackets.
+#   regexp expression was tested using rubular.com - a Ruby regular expression editor
+     pattern = /(\S*\s)*(\d+\/\d+)(\D*)$/
+     match = val.match pattern
+#    if match == nil
+#	puts "to_csv step 2 match nil" 
+#    else
+#	puts "to_csv step 2 match found" 
+#	puts "match1 is nil" if match[1] == nil 
+#	puts "match1 is " + match[1] if match[1] != nil
+#	puts "match2 is " + match[2] if match[2] != nil
+#	puts "match3 is " + match[3] if match[3] != nil
+#	puts "match4 is " + match[4] if match[4] != nil
+#	end	     
+     if ( match && match[1] == nil && match[2] != nil )
+	val="0 " + self
+## DEBUG
+#	puts "to_csv step 3 val=" + val
+## DEBUG
+     end
+     return val
   end
   
   #csv files may require units to be removed so provide a way of doing this

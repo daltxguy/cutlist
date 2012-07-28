@@ -613,9 +613,8 @@ class FileRenderer < Renderer
   def getRow(columns)
     txt = ""
     for c in columns
-      txt = txt+c
       # do any text processing on csv fields - eg: remove the ~
-      txt = txt.to_csv
+      txt = txt+c.to_csv
       txt = txt+@delimiter 
     end ## end for
     txt = txt+"\n"
