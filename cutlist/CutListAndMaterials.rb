@@ -17,7 +17,7 @@
 #
 # Type        : Tool
 #
-# Version    : 4.1.0
+# Version    : 4.1.x
 #
 # Description : Makes a cutlist based on all selected components in model.
 #
@@ -122,6 +122,9 @@
 #                4.1.2      Nov 11, 2011 Fixed issue with kerf sizes not working properly on layout Did not reserve kerf space on layout - ok
 #                4.1.3      Dec 4, 2011. Add output of parts in the CLP csv file in the format suggested by Todd Peterson - ok
 #                4.1.4      Jan 13, 2012 Compact component display sometimes does not consolidate  correctly - and some class name cleanup
+#                4.1.5      Modify text fields of menu to workaround a bug in Safari which made white background appear black with black characters
+#                4.1.6      June, 2013  Modify html to be html5 compatible for compliance with SKU2013's min support of IE8 browser
+#                                              Modification to install plugin using SKU builtin plugin installer, distribution as .rbz
 #------------------------------------------------------------------------------------------
 
 require 'sketchup.rb'
@@ -134,6 +137,28 @@ $verbose = false # the whole enchilada - slows down processing considerably - ma
 $verboseComponentDiscovery = false # trace model entity list traversal only
 $verbosePartPlacement = false #trace parts placement for layout only
 $verboseParameters = false # trace parameter passing to/from the GUI
+
+# create a GUI instance that prompts for an interactive configuration, producing the requested output formats
+# This is the main menu invoked when the user selects the Cut List plugin menu item
+def cutlist_interactive_menu
+  cutlist_webGui = WebGui.new("")
+  cutlist_webGui.start
+end
+
+# Add the plugin command to the Plugins menu
+# Add CutList main entry 
+# "Cut List" offers an html gui to select options and produce html and/or file output 
+if( not $cutlist_plugin_loaded)
+  #add_separator_to_menu("Plugins")
+  
+  plugins_menu = UI.menu("Plugins")
+  
+  plugins_menu.add_item("Cut List") { cutlist_interactive_menu }
+end 
+
+$cutlist_plugin_loaded = true
+#-----------------------------------------------------------------------------
+
 
 
 
