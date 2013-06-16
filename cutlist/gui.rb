@@ -8,7 +8,7 @@ class GuiBase
   end
   
   #base title used for all html pages - to indicate the version of cutlist being used.
-  @@title = "Cut List v4.1.5"
+  @@title = "Cut List v4.1.6"
   
   # relative location of the cutlist input html page
   @@cutlistui_location = '/cutlistui.html'
@@ -269,7 +269,6 @@ class ResultGui < GuiBase
   
   def display
     @resDialog.show {
-#      @resDialog.execute_script("handleResults(\'#{@results}\','"+"#{@cutlistWindowTitle}" +"');");
       @resDialog.execute_script("handleResults(\'#{@results}\');");
     }
   end
@@ -293,9 +292,10 @@ class LayoutGui < ResultGui
   end
   
   def display
+#   debug
+     #puts @results
     @resDialog.show {
       @resDialog.execute_script("handleLayoutScript(\'#{@results}\');");
-#      @resDialog.execute_script("handleLayoutScript(\'#{@results}\','"+"#{@layoutWindowTitle}" +"');");
     }
   end
 

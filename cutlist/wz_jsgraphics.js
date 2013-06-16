@@ -44,7 +44,13 @@ or see http://www.gnu.org/copyleft/lesser.html
 var jg_ok, jg_ie, jg_fast, jg_dom, jg_moz;
 var jg_result_html
 
-
+/* This function was originally used to distinguish between different browsers
+ *  so that the proper html would be generated.
+ *  MSIE checking was only required for IE4 and earlier and since IE4 is no 
+ *  longer used, it is safe to operate all browsers using the same code.
+ *  So, the checking code is commented out and the variables just set the same
+ *  for all browsers.
+ */
 function _chkDHTM(x, i)
 {
 	x = document.body || null;
@@ -54,8 +60,19 @@ function _chkDHTM(x, i)
 		typeof document.createRange != "undefined" &&
 		typeof (i = document.createRange()).setStartBefore != "undefined" &&
 		typeof i.createContextualFragment != "undefined");
-	jg_fast = jg_ie && document.all && !window.opera;
-	//alert(jg_fast? "jg_fast" : "not jg_fast");
+/*	The checking of document.all was to distinguish IE4 but opera also supported it, hence the original 
+ *	logic below, which is no longer needed since no one should be using document. all anymore
+ *	and it may stop working some day.
+ */
+	//jg_fast = jg_ie && document.all && !window.opera;
+	//debug
+	//alert(jg_fast? "jg_fast before" : "not jg_fast before");
+/*	Don't need the jg_fast option anymore as it doesn't produce valid html anymore
+ */
+	jg_fast = 0;
+	//alert(jg_fast? "jg_fast after" : "not jg_fast after");
+	//debug
+	
 	jg_moz = jg_dom && typeof x.style.MozOpacity != "undefined";
 	jg_ok = !!(jg_ie || jg_dom);
 }
@@ -77,7 +94,9 @@ function _pntCnvIe()
 	//alert( this.cnv.id );
 	//alert(this._htmPrtRpc());
 	if(this.cnvPrint) this.cnvPrint.insertAdjacentHTML("BeforeEnd", jg_fast? this._htmPrtRpc() : this.htm);
-	jg_result_html += this._htmPrtRpc();
+/*	jg_result_html is the cumulative html generated 
+ */
+	jg_result_html += jg_fast? this._htmPrtRpc() : this.htm;
 	this.htm = "";
 }
 
@@ -95,6 +114,7 @@ function _pntN()
 
 function _mkDiv(x, y, w, h)
 {
+	//alert("calling mkDiv");
 	this.htm += '<div style="position:absolute;'+
 		'left:' + x + 'px;'+
 		'top:' + y + 'px;'+

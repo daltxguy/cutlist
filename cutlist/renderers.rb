@@ -33,24 +33,26 @@ class HtmlRenderer < Renderer
   
   def pageHeading(modelTitle)
     html = ""
-    # experimental - label the window with the name of the model
-    #html += "<\body><head><title>+modelTitle+<\title><\head><body>"
+    # label the window with the name of the model
     # display the model name at the top of the page
-    # make sure to htmlize the mode name
+    # make sure to htmlize the model name
     puts modelTitle
     modelTitle = modelTitle.to_html
     puts modelTitle
-    html +="<BR><B><H4 style=\"color:#7d7d4f\">"+modelTitle+"</H4></B>"
+    #html +="<BR><B><H4 style=\"color:#7d7d4f\">"+modelTitle+"</H4></B>"
+    # color/size is controlled by result.css
+    html +="<BR><H4 class=\"cutlist\">"+modelTitle+"</H4>"
     return html
   end
 
   def getTitle(tableTitle)
     colspan = 2
     html = ""
-    html = html+"<BR><B><H4 style=\"color:#7d7d4f\">"+tableTitle+"</H4></B>"
-   # html = html+"<table cellpadding=2 cellspacing=0 border=1 frame=border >\\n"
-   # html = html+"<table cellpadding=2 cellspacing=0 frame=hsides bgcolor=#ECF0F3>\\n"
-    html = html+"<table id=\"cutlistTable\" cellpadding=4 cellspacing=0 frame=border border=\"1\" bordercolor=#8c8c8c rules=groups bgcolor=#ECF0F3>"
+    #html = html+"<BR><B><H4 style=\"color:#7d7d4f\">"+tableTitle+"</H4></B>"
+    # color/size is controlled by result.css
+    html = html+"<BR><H4 class=\"cutlist\">"+tableTitle+"</H4>"
+    #html = html+"<table id=\"cutlistTable\" cellpadding=4 cellspacing=0 frame=border border=\"1\" bordercolor=#8c8c8c rules=groups bgcolor=#ECF0F3>"
+    html = html+"<table id=\"cutlistTable\" >"
     return html
   end ## end getTitle
 
