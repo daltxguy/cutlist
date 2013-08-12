@@ -1,3 +1,5 @@
+module SteveR
+	module CutList
 #-----------------------------------------------------------------------------
 # module PartsIntelligence
 # Used to answer any questions we may have about the partslist and
@@ -54,7 +56,7 @@ module PartsIntelligence
   def morePartsThanBoards?
     return false
   end
-end
+end #module PartsIntelligence
 
 #-----------------------------------------------------------------------------
 # The LayoutPreParser takes the parts list and the options and organizes
@@ -426,3 +428,5 @@ end
 class BestFitLayoutEngine < LayoutEngine
 end
 
+	end # module CutLlist
+end # module SteveR

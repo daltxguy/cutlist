@@ -1,3 +1,5 @@
+module SteveR
+	module CutList
 #-----------------------------------------------------------------------------
 #########################
 # Renderer superclass   #
@@ -37,7 +39,7 @@ class HtmlRenderer < Renderer
     # display the model name at the top of the page
     # make sure to htmlize the model name
     puts modelTitle
-    modelTitle = modelTitle.to_html
+    modelTitle = CutList::string_to_html(modelTitle)
     puts modelTitle
     #html +="<BR><B><H4 style=\"color:#7d7d4f\">"+modelTitle+"</H4></B>"
     # color/size is controlled by result.css
@@ -79,7 +81,7 @@ class HtmlRenderer < Renderer
     html = html+"<tr>"
     for c in columns
       html = html+"<td>"
-      html = html+c.to_html
+      html = html+CutList::string_to_html(c)
       html = html+"</td>"
     end ## end for
     html = html+"</tr>"
@@ -304,7 +306,7 @@ class HtmlLayoutRenderer  < LayoutRenderer
     # display the model name at the top of the page
     html = html + setColor("#7d7d4f")
     html = html + " cutlistLayout.setFont(\"verdana\",\"14px\",Font.BOLD);"
-    string = string.to_html
+    string = CutList::string_to_html(string)
     html = html + " cutlistLayout.drawString(\"#{string}\",#{x},#{y});"
     return html
   end
@@ -616,7 +618,7 @@ class FileRenderer < Renderer
     txt = ""
     for c in columns
       # do any text processing on csv fields - eg: remove the ~
-      txt = txt+c.to_csv
+      txt = txt+CutList::string_to_csv(c)
       txt = txt+@delimiter 
     end ## end for
     txt = txt+"\n"
@@ -633,4 +635,6 @@ class FileRenderer < Renderer
 
 end ## end class FileRenderer
 #-----------------------------------------------------------------------------
+	end # module CutList
+end # module SteveR
 

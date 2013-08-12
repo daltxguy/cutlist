@@ -1,3 +1,5 @@
+module SteveR
+	module CutList
 #########################
 # Display_class superclass      #
 #########################
@@ -105,7 +107,7 @@ class Display < Display_class
     for c in inList
       i = i + 1 if c.getName != cx and cx != ""
       ii = 1 if c.getName != cx
-      ix = i.to_fws(3)+"-"+ii.to_fws(2)
+      ix = CutList::integer_to_fws(3,i) + "-" + CutList::integer_to_fws(2,ii)
       cols[0]=getPartPrefix()+ix
       cols[1]=c.getSubAssemblyName
       cols[2]=c.getName
@@ -144,6 +146,7 @@ class Display < Display_class
     @totalLength = 0
     roundToNumOfDigits = 2
     roundToNumOfDigits = 4 if(@metric)
+    tempFloat = 0
       
     component = ""
     component = component + getTitle(getTitleName())
@@ -157,7 +160,8 @@ class Display < Display_class
     if(isAmountEnabled())
       component = component + getTitle(getAmountTitleName())
       cols = Array.new
-      cols[0] = @totalBF.round_to(roundToNumOfDigits).to_s
+      tempFloat = CutList::float_round_to(roundToNumOfDigits, @totalBF)
+      cols[0] = tempFloat.to_s
       component = component + getRow(cols)
       component = component + getFooterRow()
       component = component + getBlankLine()
@@ -171,7 +175,8 @@ class Display < Display_class
       for d in @materialList
         cols = Array.new
         cols[0] = d[0]
-        cols[1] = d[1].round_to(roundToNumOfDigits).to_s
+	tempFloat =  CutList::float_round_to(roundToNumOfDigits, d[1])
+        cols[1] = tempFloat.to_s
         component = component + getRow(cols)
       end ## end for
       component = component + getFooterRow()
@@ -226,7 +231,7 @@ class CompactDisplay < Display
         partCount = 1
       end ##if
 
-      cols[0]=getPartPrefix()+partId.to_fws(3)
+      cols[0]=getPartPrefix() + CutList::integer_to_fws(3,partId)
       cols[1]=partCount.to_s
       #cols[2]=c.getSubAssemblyName
       cols[2]=c.getName
@@ -308,7 +313,7 @@ class CompactDisplayPart < CompactDisplay
 
     if(inList.parts.length > 0)
       for e in 0..(inList.parts.length-1)
-        cols[0]=getPartPrefix()+(e+1).to_fws(3)
+        cols[0]=getPartPrefix() + CutList::integer_to_fws(3,(e+1))
         cols[1]=inList.partCount[e].to_s
         cols[2]=inList.parts[e]
         component = component + getRow(cols)
@@ -412,17 +417,17 @@ class ClpDisplay < Display
       # Make sure the number of digits generated is the same, regardless of the value,  so that sorting by part number
       # puts it in the correct order. Use 3 digits for part number and 2 digits for subpart number.
       # we do this by extending the integer class to convert to string values.
-      ix = i.to_fws(3)+"-"+ii.to_fws(2)
+      ix = CutList::integer_to_fws(3,i) + "-" + CutList::integer_to_fws(2,ii)
       cols[0]=getPartPrefix()+ix
       cols[1]=c.getSubAssemblyName
       cols[2]=c.getName
       cols[3]="1"
       # CutListPlus accepts all sketchup units except meters
-      # If inches, then the inches symbol " needs to be stripped with to_clp since clp won't accept it - this is probably a CLP bug
+      # If inches, then the inches symbol " needs to be stripped with CutList::string_to_clp since clp won't accept it - this is probably a CLP bug
       # If meters then we will convert to inches - this is sorted with the convertMeasureForCLP method
-      cols[4]=c.convertMeasureForCLP(c.getThickness).to_s.to_clp
-      cols[5]=c.convertMeasureForCLP(c.getWidth).to_s.to_clp
-      cols[6]=c.convertMeasureForCLP(c.getLength).to_s.to_clp
+      cols[4]=CutList::string_to_clp(c.convertMeasureForCLP(c.getThickness).to_s)
+      cols[5]=CutList::string_to_clp(c.convertMeasureForCLP(c.getWidth).to_s)
+      cols[6]=CutList::string_to_clp(c.convertMeasureForCLP(c.getLength).to_s)
       cols[7]=getMaterialType()
       cols[8]=c.getMaterial
       cols[9]="yes"
@@ -518,17 +523,17 @@ class CompactClpDisplay < CompactDisplay
         partCount = 1
       end ##if
 
-      cols[0]=getPartPrefix()+partId.to_fws(3)
+      cols[0]=getPartPrefix() + CutList::integer_to_fws(3,partId)
       cols[1]=c.getSubAssemblyName
       cols[2]=c.getName
       cols[3]=partCount.to_s
       
       # CutListPlus accepts all sketchup units except meters
-      # If inches, then the inches symbol " needs to be stripped with to_clp since clp won't accept it - this is probably a CLP bug
+      # If inches, then the inches symbol " needs to be stripped with CutList::string_to_clp since clp won't accept it - this is probably a CLP bug
       # If meters then we will convert to inches - this is sorted with the convertMeasureForCLP method
-      cols[4]=c.convertMeasureForCLP(c.getThickness).to_s.to_clp
-      cols[5]=c.convertMeasureForCLP(c.getWidth).to_s.to_clp
-      cols[6]=c.convertMeasureForCLP(c.getLength).to_s.to_clp
+      cols[4]=CutList::string_to_clp(c.convertMeasureForCLP(c.getThickness).to_s)
+      cols[5]=CutList::string_to_clp(c.convertMeasureForCLP(c.getWidth).to_s)
+      cols[6]=CutList::string_to_clp(c.convertMeasureForCLP(c.getLength).to_s)
       cols[7]=getMaterialType()
       cols[8]=c.getMaterial
       cols[9]="yes"
@@ -579,7 +584,7 @@ class CompactClpDisplayPart < CompactClpDisplay
 
     if(inList.parts.length > 0)
       for p in 0..(inList.parts.length-1)
-        cols[0]= getPartPrefix()+(p+1).to_fws(3)
+        cols[0]= getPartPrefix() + CutList::integer_to_fws(3,(p+1))
 	cols[1] = "" 					#subAssemblyName
         cols[2] = ""					# description
         cols[3] = inList.partCount[p].to_s		# copies
@@ -632,5 +637,8 @@ class DisplaySheet < Display
   end
 
 end ##class DisplaySheet
+
+	end #module CutList
+end # module SteveR
 
 

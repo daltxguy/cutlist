@@ -1,11 +1,14 @@
-load 'cutlist/cutlistutl.rb'
-load 'cutlist/layout.rb'
-load 'cutlist/boards.rb'
-load 'cutlist/parts.rb'
-load 'cutlist/drivers.rb'
-load 'cutlist/gui.rb'
-load 'cutlist/display.rb'
-load 'cutlist/renderers.rb'
+require 'cutlist/cutlistutl.rb'
+require 'cutlist/layout.rb'
+require 'cutlist/boards.rb'
+require 'cutlist/parts.rb'
+require 'cutlist/drivers.rb'
+require 'cutlist/gui.rb'
+require 'cutlist/display.rb'
+require 'cutlist/renderers.rb'
+
+module SteveR
+	module CutList
 
 #-----------------------------------------------------------------------------
 # Reporter class
@@ -90,7 +93,7 @@ class Reporter
     @@options[:cutlist_Options].merge!(cutlist_options)
     
     # determine the flavor of the model, metric or inches
-    @metric = metricModel?
+    @metric = CutList::metricModel?
     
     # sets whether or not we ask for permission to update group instances found in the model the first time we encounter 
     # a case of it. Leave off for now. This means
@@ -170,7 +173,7 @@ class Reporter
   def setSheetWidthOptions
     @sheetWidthOptions = Array.new
     # If the sketchup model is in metric units, then use standard metric equivalent sizes for the plywood but store in inches
-    if ( metricModel? )
+    if ( CutList::metricModel? )
       @sheetWidthOptions.push(610/25.4) if @@options[:layout_Options][:sheet2w]
       @sheetWidthOptions.push(1220/25.4) if @@options[:layout_Options][:sheet4w]
       @sheetWidthOptions.push(1525/25.4) if @@options[:layout_Options][:sheet5w]
@@ -184,7 +187,7 @@ class Reporter
   def setSheetLengthOptions
     @sheetLengthOptions = Array.new
      # If the sketchup model is in metric units, then use standard metric equivalent sizes for the plywood but store in inches
-    if ( metricModel? )
+    if ( CutList::metricModel? )
       @sheetLengthOptions.push(610/25.4) if @@options[:layout_Options][:sheet2l]
       @sheetLengthOptions.push(1220/25.4) if @@options[:layout_Options][:sheet4l]
       @sheetLengthOptions.push(1525/25.4) if @@options[:layout_Options][:sheet5l]
@@ -669,3 +672,6 @@ def output
   end#def output
 
 end#class Reporter
+
+	end # module CutList
+end # module SteveR

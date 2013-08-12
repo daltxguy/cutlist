@@ -1,3 +1,5 @@
+module SteveR
+	module CutList
 #-----------------------------------------------------------------------------
 # base class for all output generator types, html, or file
 # This class is used to drive the different output parts ie: determine what needs to be 
@@ -238,11 +240,11 @@ class HtmlLayoutDriver < HtmlOutputDriver
       
       # display board efficiency
       calculateUtilisation(layoutBoards)
-      @html += @renderer.displayEfficiency(getTotalEfficiencyString.to_html)
+      @html += @renderer.displayEfficiency(CutList::string_to_html(getTotalEfficiencyString))
       
       # display board feet required for layout ( # of boards * bdft for each board)
       calculateTotalLayoutBoardFeet(layoutBoards)
-      @html += @renderer.displayBoardFeet(getTotalBoardFeetString(layoutBoards).to_html)
+      @html += @renderer.displayBoardFeet(CutList::string_to_html(getTotalBoardFeetString(layoutBoards)))
       
       # increment y position before starting on the boards
       pageYIncrement(50)
@@ -298,7 +300,7 @@ class HtmlLayoutDriver < HtmlOutputDriver
     @html += @renderer.displayText(@x,@y,"Parts not placed ( Part(L,W,T) Material):")
     pageYIncrement(30)
     unPlacedPartsList.each { |part|
-      @html += @renderer.displayText(@x,@y,part.summary.to_html)
+      @html += @renderer.displayText(@x,@y,CutList::string_to_html(part.summary))
       pageYIncrement(20)
     }
   end
@@ -329,7 +331,7 @@ class HtmlLayoutDriver < HtmlOutputDriver
       layoutBoards.each { |layoutBoard|
         x += 1
         efficiency += layoutBoard.getUsedAreaPercentage
-        @totalEfficiency = (efficiency/x).round_to(2)
+        @totalEfficiency = CutList::float_round_to(2, (efficiency/x))
       }
     end
   end
@@ -343,7 +345,7 @@ class HtmlLayoutDriver < HtmlOutputDriver
     @pageEmpty = false
     #first extract the board dimensions and details and render the board
     board = layoutBoard.board
-    @html += @renderer.drawBoard(2,"#cacaaf",layoutBoard.to_s.to_html,@x,@y,board.getLengthPx,board.getWidthPx)
+    @html += @renderer.drawBoard(2,"#cacaaf",CutList::string_to_html(layoutBoard.to_s),@x,@y,board.getLengthPx,board.getWidthPx)
     # now print off each part on this board
     partsList = layoutBoard.getBoardPartList
     partsListArray  = partsList.getList
@@ -357,7 +359,7 @@ class HtmlLayoutDriver < HtmlOutputDriver
   def renderPart(part)
     # get the relative coordinates for this part ( returns an array containing x,y)
     coords = part.getLocationOnBoardInPx
-    @html += @renderer.drawPart(2,"#bcbc9a",part.getName.to_html,@x+coords[0],@y+coords[1],part.getLengthPx,part.getWidthPx)
+    @html += @renderer.drawPart(2,"#bcbc9a",CutList::string_to_html(part.getName),@x+coords[0],@y+coords[1],part.getLengthPx,part.getWidthPx)
   end
   
   # use the layout gui to display the output
@@ -427,5 +429,8 @@ class SvgLayoutDriver < HtmlLayoutDriver
       @svgFileNameList.push(@nameSvg +"\n")
     end
   end
-end
+end # class SvgLayoutDriver
+
+	end # module CutList
+end # module SteveR
 

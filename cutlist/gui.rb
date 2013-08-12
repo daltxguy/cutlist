@@ -1,4 +1,10 @@
-#require 'cutlistui/reporter.rb'
+#------------------------------------------------------------------------------
+# All classes to do with the browser based menus and displaying of the cutlist and layout results
+# in a browser window
+#-----------------------------------------------------------------------------
+module SteveR
+	module CutList
+
 #-----------------------------------------------------------------------------
 # Gui base class to define some common things on all the GUIs
 #-----------------------------------------------------------------------------
@@ -8,7 +14,7 @@ class GuiBase
   end
   
   #base title used for all html pages - to indicate the version of cutlist being used.
-  @@title = "Cut List v4.1.6"
+  @@title = "Cut List v4.1.7"
   
   # relative location of the cutlist input html page
   @@cutlistui_location = '/cutlistui.html'
@@ -116,7 +122,7 @@ class WebGui < GuiBase
     elsif (kerfSizeUnits == "4th")
       return (kerfSize/4).inch
     elsif (kerfSizeUnits == "mm")
-      return Float(kerfSize/25.4).round_to(4).inch
+      return CutList::float_round_to(4, Float(kerfSize/25.4)).inch
     else
        return 0
     end
@@ -299,5 +305,8 @@ class LayoutGui < ResultGui
     }
   end
 
-end
+end # layoutGui class
+
+	end # module CutList
+end # module SteveR
 

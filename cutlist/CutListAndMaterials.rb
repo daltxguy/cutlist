@@ -54,7 +54,7 @@
 #
 # Additional info: Available at http://steveracz.com/joomla/content/view/45/1/
 #
-# Date last modified        : Aug 2009
+# Date last modified        : Aug 2013
 #
 # Version     :        1.0                        Initial Release.
 #             : 2.0         Added recognition of hardware parts
@@ -125,38 +125,41 @@
 #                4.1.5      Modify text fields of menu to workaround a bug in Safari which made white background appear black with black characters
 #                4.1.6      June, 2013  Modify html to be html5 compatible for compliance with SKU2013's min support of IE8 browser
 #                                              Modification to install plugin using SKU builtin plugin installer, distribution as .rbz
+#                4.1.7      July, 2013 - Wrap all code in private modules for sharing via 'Sketchup Extensions'
 #------------------------------------------------------------------------------------------
 
-require 'sketchup.rb'
-load 'cutlist/reporter.rb'  # this is the 'main' and is invoked from cutlist.rb in the plugins directory
+require 'sketchup'
+require 'cutlist/reporter'  # the gui classes to bring up the main menu
 
+module SteveR
+	module CutList
 
-# determine amount of debugging output to the ruby console
-$verbose1 = false # minimal progress tracking
-$verbose = false # the whole enchilada - slows down processing considerably - may crash sketchup - use sparingly. turn $verbose on around desired areas
-$verboseComponentDiscovery = false # trace model entity list traversal only
-$verbosePartPlacement = false #trace parts placement for layout only
-$verboseParameters = false # trace parameter passing to/from the GUI
+# 		determine amount of debugging output to the ruby console
+		$verbose1 = false # minimal progress tracking
+		$verbose = false # the whole enchilada - slows down processing considerably - may crash sketchup - use sparingly. turn $verbose on around desired areas
+		$verboseComponentDiscovery = false # trace model entity list traversal only
+		$verbosePartPlacement = false #trace parts placement for layout only
+		$verboseParameters = false # trace parameter passing to/from the GUI
 
-# create a GUI instance that prompts for an interactive configuration, producing the requested output formats
-# This is the main menu invoked when the user selects the Cut List plugin menu item
-def cutlist_interactive_menu
-  cutlist_webGui = WebGui.new("")
-  cutlist_webGui.start
+# 		create a GUI instance that prompts for an interactive configuration, producing the requested output formats
+# 		This is the main menu invoked when the user selects the Cut List plugin menu item
+		def CutList.cutlist_interactive_menu
+			cutlist_webGui = WebGui.new("")
+			cutlist_webGui.start
+		end
+
+# 		Add the plugin command to the Plugins menu
+# 		Add CutList main entry 
+# 		"Cut List" offers an html gui to select options and produce html and/or file output 
+		if( not $cutlist_plugin_loaded)  
+			plugins_menu = UI.menu("Plugins")
+  
+			plugins_menu.add_item("Cut List") { CutList.cutlist_interactive_menu }
+		end 
+
+		$cutlist_plugin_loaded = true
+	end
 end
-
-# Add the plugin command to the Plugins menu
-# Add CutList main entry 
-# "Cut List" offers an html gui to select options and produce html and/or file output 
-if( not $cutlist_plugin_loaded)
-  #add_separator_to_menu("Plugins")
-  
-  plugins_menu = UI.menu("Plugins")
-  
-  plugins_menu.add_item("Cut List") { cutlist_interactive_menu }
-end 
-
-$cutlist_plugin_loaded = true
 #-----------------------------------------------------------------------------
 
 

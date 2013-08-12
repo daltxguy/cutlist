@@ -12,17 +12,21 @@
 # IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #-----------------------------------------------------------------------------
-require 'sketchup.rb'
-require 'extensions.rb'
+require 'sketchup'
+require 'extensions'
 
-su_cutlist_extension = SketchupExtension.new "CutList",
-    "cutlist/CutListAndMaterials.rb"
+module SteveR
+	module CutList
+		su_cutlist_extension = SketchupExtension.new "CutList",
+		"cutlist/CutListAndMaterials.rb"
 
-su_cutlist_extension.description = 
-"Produce a materials list from your model and a layout" +
-" of the parts on material of selectable sizes." 
-su_cutlist_extension.version = "4.1.6"
-su_cutlist_extension.copyright = "2013"
-su_cutlist_extension.creator = "S. Racz"
+		su_cutlist_extension.description = 
+		"Produce a materials list from your model and a layout" +
+		" of the parts on material of selectable sizes." 
+		su_cutlist_extension.version = "4.1.7"
+		su_cutlist_extension.copyright = "2013"
+		su_cutlist_extension.creator = "S. Racz"
 
-Sketchup.register_extension su_cutlist_extension, true
+		Sketchup.register_extension su_cutlist_extension, true
+	end
+end

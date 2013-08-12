@@ -1,3 +1,5 @@
+module SteveR
+	module CutList
 #-----------------------------------------------------------------------------
 # Class PartList - holds all selected components which are neither a 
 # solid part nor a sheet part - typically this would be hardware...or things like bryce
@@ -63,13 +65,21 @@ end ###Class PartList
 #-----------------------------------------------------------------------------
 class CutListPart
   def initialize(c, name, subAssemblyName, material,metricVolume)
-    # always get the bounding box from the definition
-    # note that we have extended the Sketchup Group class
-    # so that we can get the bounding box the same way 
-    # whether the entity is a component or a group
+    # always get the bounding box from the definition if it exists
+    # components have definition attributes (same for all components) which is accessible through the component entity
+    # groups also have definitions but it is not stored against the group, but you can search through the definitions list to
+    # find which instance belongs to which group
     boundingBox = c.bounds
     if c.respond_to? "definition"
      boundingBox = c.definition.bounds
+     #puts "CutListPart - affirmative check for respond to bounding box for component"
+    else
+	# is this a group entity? If so, then use our private method to find the definition
+	if c.typename == "Group"
+		group_definition = CutList::group_definition(c)
+		boundingBox = group_definition.bounds
+		#puts "CutListPart - affirmative check for respond to bounding box for group"
+	end
     end
     # get the transformation of the component
     trans=c.transformation.to_a
@@ -98,7 +108,7 @@ class CutListPart
     @subAssemblyName = strip(subAssemblyName, @length.to_s, @width.to_s, @thickness.to_s )
     @canRotate = true
     @metricVolume = metricVolume
-    @metric = metricModel?
+    @metric = CutList.metricModel?
     @locationOnBoard = nil
   end
   
@@ -108,9 +118,9 @@ class CutListPart
     @squareFeet = @area/144
     @boardFeet = @volume/144
     # part in pixels scale  12in=100px
-    # Useful for display purpose but not accurate enough for part comparisans
-    @length_px = ((@length/12)*100).to_f.round_to(0)
-    @width_px = ((@width/12)*100).to_f.round_to(0)
+    # Useful for display purpose but not accurate enough for part comparisons
+    @length_px = CutList::float_round_to(0,((@length/12)*100).to_f)
+    @width_px = CutList::float_round_to(0,((@width/12)*100).to_f)
   end
   
   # Bubble sort
@@ -155,9 +165,9 @@ class CutListPart
   def getTotalLength
     if @metricVolume
       # 1 ft = 0.3048 metres
-      (@lengthInFeet*0.3048).round_to(4)
+      CutList::float_round_to(4,(@lengthInFeet*0.3048))
     else
-      @lengthInFeet.round_to(2)
+      CutList::float_round_to(2,@lengthInFeet)
     end
   end
   
@@ -215,9 +225,9 @@ class CutListPart
       # divide by 1000000 to get cu.m.
       #(@boardFeet*2359.7424).round_to(6)
       #(@width.to_l*@length.to_l*@thickness.to_l*2359.7383).round_to(6)
-      (@boardFeet*(2359.7372232207958956904236222001/1000000)).round_to(6)
+      CutList::float_round_to(6,(@boardFeet*(2359.7372232207958956904236222001/1000000)))
     else
-      @boardFeet.round_to(2)
+      CutList::float_round_to(2,@boardFeet)
     end
   end
   
@@ -234,9 +244,9 @@ class CutListPart
     if @metricVolume
       # 1sq ft = 929.0304sq cm
       # divide by 10000 to get sq m
-      (@squareFeet*(0.092903040189522201889968968842358)).round_to(6)
+      CutList::float_round_to(6,(@squareFeet*(0.092903040189522201889968968842358)))
     else
-      @squareFeet.round_to(2)
+      CutList::float_round_to(2,@squareFeet)
     end
   end
   
@@ -263,7 +273,7 @@ class CutListPart
   def getLocationOnBoardInPx
     # return top left coordinate (x,y) of the part's location on the board for drawing purposes
     # convert the standard dimension units expressed to Px ( 100px/inch)
-    Array[((@locationOnBoard[0]/12)*100).to_f.round_to(0), ((@locationOnBoard[1]/12)*100).to_f.round_to(0)]
+    Array[CutList::float_round_to(0,((@locationOnBoard[0]/12)*100).to_f), CutList::float_round_to(0,((@locationOnBoard[1]/12)*100).to_f)]
   end
   def changeWidth(width)
     @width = width.inch
@@ -278,8 +288,8 @@ class CutListPart
     # CutList Plus has some import limitations. Inches, feet, mm and cm are
     # accepted but not meters. So here we convert the measure back to a float in inches
     # if the model is in meters. This is just for CutListPlus import file generation
-    if modelInMeters?
-      measure = measure.to_f.round_to(4)
+    if CutList::modelInMeters?
+      measure = CutList::float_round_to(4,measure.to_f)
     end
     return measure      
   end
@@ -324,7 +334,7 @@ class SolidPart < CutListPart
     result = inThickness
     #keep marginThickness for use later in the layout
     @marginThickness = @nominalMargin+inThickness
-    @marginThickness = @marginThickness.round_to(4)
+    @marginThickness = CutList::float_round_to(4,@marginThickness)
     if((@quarter[0]) && @marginThickness<=1)
       result = 1.inch
     elsif((@quarter[1]) && @marginThickness<=1.25)
@@ -649,3 +659,6 @@ end
 #-----------------------------------------------------------------------------
 class BoardList < CutListPartList
 end
+
+	end # module CutLlist
+end # module SteveR

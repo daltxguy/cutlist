@@ -1,3 +1,5 @@
+module SteveR
+	module CutList
 #-----------------------------------------------------------------------------
 # Class BoardWarehouse is an abstraction of all information about boards or sheet goods 
 # which are available to use for the layout.
@@ -346,8 +348,8 @@ class Board
     # actual board size is used. Using px has the problem of, well, pixelation
     # which takes away accuracy because of its inherent need to subdivide into a
     # unit with poor granularity.
-    @length_px = ((@length/12)*100).to_f.round_to(0)
-    @width_px = ((@width/12)*100).to_f.round_to(0)
+    @length_px = CutList::float_round_to(0,((@length/12)*100))
+    @width_px = CutList::float_round_to(0,((@width/12)*100))
     @area_px = @length_px*@width_px
     @metricVolume = metricVolume
   end
@@ -395,9 +397,9 @@ class Board
     if @metricVolume
       # 1bd ft = 2359.7424/1000000 cu m
       # Use as much accuracy as possible.
-      (@boardFeet*(2359.7372232207958956904236222001/1000000)).round_to(4)
+      CutList::float_round_to(4,@boardFeet*(2359.7372232207958956904236222001/1000000))
     else
-      @boardFeet.round_to(2)
+      CutList::float_round_to(2,@boardFeet)
     end
   end
   def getRawBoardFeet
@@ -564,7 +566,7 @@ class LayoutBoard
     def parent
       @parent
     end
-  end
+  end # class LeafNode
   
   class Node
     @@nodeType="node"
@@ -616,7 +618,7 @@ class LayoutBoard
     def getPartArea
       return @part[:width]*@part[:length]
     end
-  end
+  end #class Node
 
   def initialize(board,layoutOptions,metricVolume)
     #super(board.getLength,board.getWidth,board.getThickness,board.getMaterial,metricVolume)
@@ -856,7 +858,7 @@ class LayoutBoard
     # we can work these numbers in pixels - good as any - as long as the units are consistent
     #usedArea = areaOfPartsOnBoard
     usedArea = areaOfPartsOnBoardFromList
-    @usedAreaPercentage = ((usedArea/@board.getAreaPx)*100).round_to(2)
+    @usedAreaPercentage = CutList::float_round_to(2,((usedArea/@board.getAreaPx)*100))
   end
   def getUsedAreaPercentage
     @usedAreaPercentage
@@ -869,4 +871,7 @@ class LayoutBoard
     return @board.to_s + (' (' + getUsedAreaPercentage.to_s + '%)' if getUsedAreaPercentage != 0 )
   end
   
-end
+end #class LayourBoard
+
+	end # module CutLlist
+end # module SteveR
