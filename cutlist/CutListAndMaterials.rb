@@ -126,6 +126,7 @@
 #                4.1.6      June, 2013  Modify html to be html5 compatible for compliance with SKU2013's min support of IE8 browser
 #                                              Modification to install plugin using SKU builtin plugin installer, distribution as .rbz
 #                4.1.7      July, 2013 - Wrap all code in private modules for sharing via 'Sketchup Extensions'
+#                4.1.8      Aug 2013 - Fix print output for layout
 #------------------------------------------------------------------------------------------
 
 require 'sketchup'

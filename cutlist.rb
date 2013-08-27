@@ -23,7 +23,7 @@ module SteveR
 		su_cutlist_extension.description = 
 		"Produce a materials list from your model and a layout" +
 		" of the parts on material of selectable sizes." 
-		su_cutlist_extension.version = "4.1.7"
+		su_cutlist_extension.version = "4.1.8"
 		su_cutlist_extension.copyright = "2013"
 		su_cutlist_extension.creator = "S. Racz"
 

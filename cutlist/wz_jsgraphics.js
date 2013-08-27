@@ -42,6 +42,8 @@ or see http://www.gnu.org/copyleft/lesser.html
 
 
 var jg_ok, jg_ie, jg_fast, jg_dom, jg_moz;
+/*  jg_result_html is the cumulative html for drawing the final result and is used for printing
+ */
 var jg_result_html
 
 /* This function was originally used to distinguish between different browsers
@@ -97,6 +99,7 @@ function _pntCnvIe()
 /*	jg_result_html is the cumulative html generated 
  */
 	jg_result_html += jg_fast? this._htmPrtRpc() : this.htm;
+	//alert(this.htm);
 	this.htm = "";
 }
 
@@ -1093,7 +1096,7 @@ text both horizontally (e.g. right) and vertically within that rectangle */
 	else
 		this.paint = _pntN;
 
-	this.setPrintable(false);
+	this.setPrintable(true);
 }
 
 function _mkLinVirt(aLin, x1, y1, x2, y2)
