@@ -23,7 +23,7 @@ module PartsIntelligence
   # do I have any parts which are wider than the available boards?
   def partsWiderThanBoards?
     @widestBoard = @homerDepot.widestBoardAvailable?
-    puts "widest Board Available=" + @widestBoard.to_s if $verbose1
+    puts "widest Board Available=" + @widestBoard.to_s if CutList.verbose1
     partArray = @inPartList.getList
     partArray.each { |part| return true if part.getWidth > @widestBoard }
     return false
@@ -32,7 +32,7 @@ module PartsIntelligence
   # do I have parts which are currently thicker than the thickest boards available?
   def partsThickerThanBoards?
     @thickestBoard = @homerDepot.thickestBoardAvailable?.inch
-    puts "thickest Board Available=" + @thickestBoard.to_s if $verbose1
+    puts "thickest Board Available=" + @thickestBoard.to_s if CutList.verbose1
     partArray = @inPartList.getList
     partArray.each { |part| return true if part.getThickness > @thickestBoard }
     return false
@@ -168,7 +168,7 @@ end
         end
         # The thickness of each part will always be the thickness of the board
         splitThickness = thickestBoard.inch
-        puts "part=" + part.getName + " thickness=" + part.getThickness.inch.to_s + " splits=" + splitInto.to_s + "new thickness=" + splitThickness.to_s if $verbose1
+        puts "part=" + part.getName + " thickness=" + part.getThickness.inch.to_s + " splits=" + splitInto.to_s + "new thickness=" + splitThickness.to_s if CutList.verbose1
         #make a copy(ies) of this part
         splitInto.times do |i| 
           splitPart = part.deep_clone
@@ -188,7 +188,7 @@ end
     addList.each{ |newPart| @inPartList.add(newPart)}
     # sort the list again
     @inPartList.sort
-    puts @inPartList.inspect if $verbose
+    puts @inPartList.inspect if CutList.verbose
  
   end
   
@@ -214,7 +214,7 @@ end
     addList.each{ |newPart| @inPartList.add(newPart)}
     # sort the list again
     @inPartList.sort
-    puts @inPartList.inspect if $verbose
+    puts @inPartList.inspect if CutList.verbose
   end
   
   # This will split any parts which are too wide into some multiple of evenly split widths, no wider than the widest board
@@ -228,7 +228,7 @@ end
           # need to figure out how many chunks to split it into
           splitInto = (part.getWidth.inch/widestBoard.inch).ceil
           splitWidth = widestBoard.inch
-          puts "part=" + part.getName.to_s + " width=" + part.getWidth.to_s + " splits=" + splitInto.to_s + " new width=" + splitWidth.to_s if $verbose1
+          puts "part=" + part.getName.to_s + " width=" + part.getWidth.to_s + " splits=" + splitInto.to_s + " new width=" + splitWidth.to_s if CutList.verbose1
           # change the width of the original
           #make a copy(ies) of this part, 1 less than the number of splits
           splitInto.times do |i| 
@@ -247,7 +247,7 @@ end
     addList.each{ |newPart| @inPartList.add(newPart)}
     # sort the list again
     @inPartList.sort
-    puts @inPartList.inspect if $verbose
+    puts @inPartList.inspect if CutList.verbose
   end
   
   # organize the parts by layout board type, readying for the layout
@@ -333,15 +333,15 @@ class LayoutEngine
     end
     # get a board from the warehouse
     @board = @homerDepot.getBoard(material, thickness)
-    puts "Retrieved board from warehouse:" + @board.to_s if $verbosePartPlacement
+    puts "Retrieved board from warehouse:" + @board.to_s if CutList.verbosePartPlacement
     return @board
   end
   
   def placeParts
-    puts "-----------------------------------------------------" if $verbosePartPlacement
-    puts "placeParts" if $verbosePartPlacement
+    puts "-----------------------------------------------------" if CutList.verbosePartPlacement
+    puts "placeParts" if CutList.verbosePartPlacement
     @remainingPartsToPlace = @inPartList.count
-    puts "parts to place=" + @remainingPartsToPlace.to_s if $verbosePartPlacement
+    puts "parts to place=" + @remainingPartsToPlace.to_s if CutList.verbosePartPlacement
     #now get a board with the options specified
     board = getBoard()
     
@@ -357,10 +357,10 @@ class LayoutEngine
         # place the part on the board
         if ( layoutBoard.addPartToBoard(nextPart) == false )
           #put the part on a todo list?
-          puts "part did not fit" if $verbosePartPlacement
+          puts "part did not fit" if CutList.verbosePartPlacement
           @partsToDoList.add(nextPart)
         else
-          puts "Part placed: " + nextPart.to_s if $verbosePartPlacement
+          puts "Part placed: " + nextPart.to_s if CutList.verbosePartPlacement
         end
       end
       
@@ -376,20 +376,20 @@ class LayoutEngine
       # check to see if we are not in a loop because of non-convergence
       # non-convergence here means that a new board has not resulted in any more placed parts -meaning that there is nothing more
       # we can do, so we must stop
-      puts "parts left to place=" +  @inPartList.count.to_s if $verbosePartPlacement
+      puts "parts left to place=" +  @inPartList.count.to_s if CutList.verbosePartPlacement
       if @remainingPartsToPlace == @inPartList.count
         # we have not made any progress with a new board - must end this foolishness
         @status.set("Some parts were left which could not be placed on given stock.\nTry larger sizes.","warning")
         @convergenceImpossible = true
-        puts "Convergence impossible - remaining parts count has not decremented with a new board" if $verbosePartPlacement
+        puts "Convergence impossible - remaining parts count has not decremented with a new board" if CutList.verbosePartPlacement
         # Nothing was added to this board so remove it from our list
-        puts "returning last board to warehouse" if $verbosePartPlacement
+        puts "returning last board to warehouse" if CutList.verbosePartPlacement
         @layoutBoards.pop()
         return
       else
         # this board is full because we've tried every part and no more parts fit but we know we added some
-        puts "Board complete or full" if $verbosePartPlacement
-        puts "-----------------------------------------------------" if $verbosePartPlacement
+        puts "Board complete or full" if CutList.verbosePartPlacement
+        puts "-----------------------------------------------------" if CutList.verbosePartPlacement
         layoutBoard.setBoardFull
       end      
     end
@@ -404,7 +404,7 @@ class LayoutEngine
       return nil if @status.statusNotGood
       puts  "boards?=" + @homerDepot.boardsAvailable?.to_s + \
             " moreParts?=" + (!@inPartList.empty?).to_s + \
-            " converging?=" + (!@convergenceImpossible).to_s if $verbosePartPlacement 
+            " converging?=" + (!@convergenceImpossible).to_s if CutList.verbosePartPlacement 
     end
           
     #if we still have parts to place but no boards left then tell the user
@@ -416,7 +416,7 @@ class LayoutEngine
         
     # return the result of all our work, a list of layoutBoards, each of which contains the parts
     # to be cut out of them and the list of any parts which could not placed
-    puts "returning boards=" + @layoutBoards.size.to_s + "Parts leftover=" + @inPartList.count.to_s if $verbosePartPlacement
+    puts "returning boards=" + @layoutBoards.size.to_s + "Parts leftover=" + @inPartList.count.to_s if CutList.verbosePartPlacement
     return nil, @inPartList if @layoutBoards.empty?
     return @layoutBoards, @inPartList
   end

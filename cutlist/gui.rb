@@ -86,7 +86,7 @@ class WebGui < GuiBase
         f.puts @layout_options.inspect
       end
       $stdout = stdout
-      puts "Saved to " + File.dirname(__FILE__)+getConfigLocation if $verbose1
+      puts "Saved to " + File.dirname(__FILE__)+getConfigLocation if CutList.verbose1
     }
   end
   
@@ -130,15 +130,15 @@ class WebGui < GuiBase
   
   def parse_input_string(p)
     # display the parameters as they are sent from the html page
-    puts "input parameter array: <<<<<"  + p.to_s if $verboseParameters
+    puts "input parameter array: <<<<<"  + p.to_s if CutList.verboseParameters
     a = p.split(',')
     parse_input_array(a)
     @cutlist_options = getCutlistOptions(a)
     # display the cutlist options after they are parsed from the input parameters
-    puts "cutlist options parsed: <<<<<"  + @cutlist_options.to_s if $verboseParameters
+    puts "cutlist options parsed: <<<<<"  + @cutlist_options.to_s if CutList.verboseParameters
     @layout_options = getLayoutOptions(a)
     # display the layout options after they are parsed from the input parameters
-    puts "layout options parsed: <<<<<"  + @layout_options.to_s if $verboseParameters
+    puts "layout options parsed: <<<<<"  + @layout_options.to_s if CutList.verboseParameters
   end
   
   def parse_input_array(a)

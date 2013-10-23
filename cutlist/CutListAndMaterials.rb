@@ -126,7 +126,9 @@
 #                4.1.6      June, 2013  Modify html to be html5 compatible for compliance with SKU2013's min support of IE8 browser
 #                                              Modification to install plugin using SKU builtin plugin installer, distribution as .rbz
 #                4.1.7      July, 2013 - Wrap all code in private modules for sharing via 'Sketchup Extensions'
-#                4.1.8      Aug 2013 - Fix print output for layout
+#                4.1.8      Oct, 2013 - Fix print output for layout
+#                                           - add support for files and paths with extended charset
+#                                           - replace global declarations of debug flags with private
 #------------------------------------------------------------------------------------------
 
 require 'sketchup'
@@ -136,11 +138,25 @@ module SteveR
 	module CutList
 
 # 		determine amount of debugging output to the ruby console
-		$verbose1 = false # minimal progress tracking
-		$verbose = false # the whole enchilada - slows down processing considerably - may crash sketchup - use sparingly. turn $verbose on around desired areas
-		$verboseComponentDiscovery = false # trace model entity list traversal only
-		$verbosePartPlacement = false #trace parts placement for layout only
-		$verboseParameters = false # trace parameter passing to/from the GUI
+		def CutList.verbose1
+			false # minimal progress tracking
+		end
+		
+		def CutList.verbose
+			false # the whole enchilada - slows down processing considerably - may crash sketchup - use sparingly. turn CutList.verbose on around desired areas
+		end
+		
+		def CutList.verboseComponentDiscovery
+			false # trace model entity list traversal only
+		end
+		
+		def CutList.verbosePartPlacement
+			false #trace parts placement for layout only
+		end
+		
+		def CutList.verboseParameters
+			false # trace parameter passing to/from the GUI
+		end
 
 # 		create a GUI instance that prompts for an interactive configuration, producing the requested output formats
 # 		This is the main menu invoked when the user selects the Cut List plugin menu item

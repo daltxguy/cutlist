@@ -630,7 +630,7 @@ class LayoutBoard
     @kerfSize = @layoutOptions[:sawKerfSize] if @layoutOptions[:useSawKerf]
     @kerfSize = 0 if !@layoutOptions[:useSawKerf]
     #debug
-    puts "Kerf Size=" + @kerfSize.to_s if $verboseParameters
+    puts "Kerf Size=" + @kerfSize.to_s if CutList.verboseParameters
     
     # intialize the root node
     @root = Node.new(self)
@@ -640,7 +640,7 @@ class LayoutBoard
     # so even if the part is exactly the width of the board requiring no cuts, it will fit
     @root.addLeft( {:xy =>topLeft,:length =>@board.getLength+@kerfSize,:width =>@board.getWidth+@kerfSize} )
     #debug
-    puts "Kerf enhanced board size: length=" + (@board.getLength+@kerfSize).to_s + " width=" + (@board.getWidth+@kerfSize).to_s if $verbosePartPlacement
+    puts "Kerf enhanced board size: length=" + (@board.getLength+@kerfSize).to_s + " width=" + (@board.getWidth+@kerfSize).to_s if CutList.verbosePartPlacement
     @boardFull = false
   end
 
@@ -663,7 +663,7 @@ class LayoutBoard
     # mark the space used by this part as taken and adjust the tree of available space
     # The space used on the layout board must include any kerf rquired, so we insert a part which is the layoutPart size enhanced by the kerf sizes
     insertPartInTree(leafNode,{:xy => leafNode.rect[:xy], :length => layoutPart.getLength+@kerfSize, :width => layoutPart.getWidth+@kerfSize })
-    puts "part added!" if $verbosePartPlacement
+    puts "part added!" if CutList.verbosePartPlacement
     return true
   end
   
@@ -674,7 +674,7 @@ class LayoutBoard
     leaf.parent.addPart( layoutPart )
     #debug
     puts "Adding part at location:[" +  (leaf.rect[:xy][0]).to_s + "," + (leaf.rect[:xy][1]).to_s + "]" + 
-           " length=" + (layoutPart[:length]).to_l.to_s + " width=" +  (layoutPart[:width]).to_l.to_s if $verbosePartPlacement
+           " length=" + (layoutPart[:length]).to_l.to_s + " width=" +  (layoutPart[:width]).to_l.to_s if CutList.verbosePartPlacement
     
     #remove the branch not chosen from the parent and link in a new Node on the branch chosen
     # figure out if we are the right or left node and delete the other one - we dont need it anymore cause it wasn't chosen
@@ -783,9 +783,9 @@ class LayoutBoard
     leaf = true if node.getNodeType == "leaf"
     #look at the leaf if we are a leaf
     if leaf
-      puts "look at a leaf" if $verbose
-      puts "ll=" + node.rect[:length].to_l.to_s + "lw="  + node.rect[:width].to_l.to_s if $verbose
-      puts "pl=" + length.to_l.to_s + "pw=" + width.to_l.to_s if $verbose
+      puts "look at a leaf" if CutList.verbose
+      puts "ll=" + node.rect[:length].to_l.to_s + "lw="  + node.rect[:width].to_l.to_s if CutList.verbose
+      puts "pl=" + length.to_l.to_s + "pw=" + width.to_l.to_s if CutList.verbose
       # won't fit if length is too short
       return nil if length > node.rect[:length]
       # won't fit if width is too narrow
@@ -794,7 +794,7 @@ class LayoutBoard
       return node
     end
     # it's a node
-    puts "it's a node" if $verbose
+    puts "it's a node" if CutList.verbose
     #go left
     bestLeft = findBestFit(node.left,length,width) 
     #go right
@@ -822,7 +822,7 @@ class LayoutBoard
     areaLeft = getAreaOfParts(node.left)
     # add up all parts to the right of the node
     areaRight = getAreaOfParts(node.right)
-    #puts (areaLeft + areaRight + node.getPartArea).to_s if $verbose1
+    #puts (areaLeft + areaRight + node.getPartArea).to_s if CutList.verbose1
     return (areaLeft + areaRight + node.getPartArea)
   end
   

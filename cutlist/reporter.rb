@@ -232,9 +232,9 @@ class Reporter
           solidPartLayoutEngine = BestFitLayoutEngine.new(solidPartList,@inBoardList,@boardOptions,@@options[:layout_Options],@volumeMeasureInMetric)
           layoutBoards, unplacedPartsList = solidPartLayoutEngine.run
           @layoutBoards += layoutBoards if layoutBoards != nil
-          puts "Boards Added=" + @layoutBoards.size.to_s if $verbosePartPlacement
+          puts "Boards Added=" + @layoutBoards.size.to_s if CutList.verbosePartPlacement
           @unplacedPartsList +(unplacedPartsList) if unplacedPartsList != nil
-          puts "Unplaced Solid Parts during layout=" + unplacedPartsList.count.to_s if  $verbosePartPlacement
+          puts "Unplaced Solid Parts during layout=" + unplacedPartsList.count.to_s if  CutList.verbosePartPlacement
         }
       end
       # determine if we need to create a layout for sheet parts
@@ -251,9 +251,9 @@ class Reporter
           sheetPartLayoutEngine = BestFitLayoutEngine.new(sheetPartList,@inBoardList,@sheetOptions,@@options[:layout_Options],@volumeMeasureInMetric)
           layoutSheets, unplacedPartsList = sheetPartLayoutEngine.run
           @layoutSheets += layoutSheets if layoutSheets != nil
-          puts "Sheets Added=" + @layoutSheets.size.to_s if $verbosePartPlacement
+          puts "Sheets Added=" + @layoutSheets.size.to_s if CutList.verbosePartPlacement
           @unplacedPartsList +(unplacedPartsList) if unplacedPartsList != nil
-          puts "Unplaced Sheet Parts during layout=" + unplacedPartsList.count.to_s if  $verbosePartPlacement
+          puts "Unplaced Sheet Parts during layout=" + unplacedPartsList.count.to_s if  CutList.verbosePartPlacement
         }
       end
   end
@@ -330,7 +330,7 @@ class Reporter
   # When this method is first called, the subAssemblyName is the project, as everthing belongs to the project by default.
   #-----------------------------------------------------------------------------
   def getSubComponents(entityList, level, subAssemblyName)
-    puts "checking level=" + level.to_s if $verboseComponentDiscovery
+    puts "checking level=" + level.to_s if CutList.verboseComponentDiscovery
     model = Sketchup.active_model
     selection = model.selection
     # the levelHasComponents flag is used to indicate if we have found any parts at this level
@@ -345,20 +345,20 @@ class Reporter
           compName = nil
           if(c.typename == "ComponentInstance")
             compName = c.definition.name
-            puts "component instance with definition name=" + compName.to_s if $verboseComponentDiscovery
+            puts "component instance with definition name=" + compName.to_s if CutList.verboseComponentDiscovery
           elsif(c.typename == "Group")
             compName = c.name
-            puts "group with name=" + compName.to_s if $verboseComponentDiscovery
+            puts "group with name=" + compName.to_s if CutList.verboseComponentDiscovery
             if (compName == nil || compName == "" )
               #let's see if this is a copy of a group which might already have a name
               compName = getGroupCopyName(c)
               if ( compName != nil && compName != "" )
-                puts "group had no name but is assigned name=" + compName.to_s + " based on its parent" if $verboseComponentDiscovery
+                puts "group had no name but is assigned name=" + compName.to_s + " based on its parent" if CutList.verboseComponentDiscovery
               end
             end
           end ##if
           
-          #puts "element: " " type=" + c.typename.to_s + " inSelection=" + inSelection.to_s + " level=" + level.to_s + " visible=" + c.layer.visible?.to_s if $verboseComponentDiscovery
+          #puts "element: " " type=" + c.typename.to_s + " inSelection=" + inSelection.to_s + " level=" + level.to_s + " visible=" + c.layer.visible?.to_s if CutList.verboseComponentDiscovery
           
           # get the material name for this part
           partMaterialClass = c.material
@@ -375,8 +375,8 @@ class Reporter
           if (isPartOrSheet( @@options[:cutlist_Options][:partWords], partMaterial ) ||
               isPartOrSheet( @@options[:cutlist_Options][:partWords], compName) )
             @partList.add(compName)
-            puts "adding part name=" + compName.to_s + " level=" + level.to_s  + " as a hardware part since material or name matched"  if $verboseComponentDiscovery
-            puts "+++++++++++++++++++++++++++" if $verboseComponentDiscovery
+            puts "adding part name=" + compName.to_s + " level=" + level.to_s  + " as a hardware part since material or name matched"  if CutList.verboseComponentDiscovery
+            puts "+++++++++++++++++++++++++++" if CutList.verboseComponentDiscovery
             # since a part was added, mark this level as having components
             levelHasComponents = true
             next   #move on to the next part at this level
@@ -396,8 +396,8 @@ class Reporter
           # Even if this part is ultimtely not added ( because it has sub-conponents) we can record which sub-assembly it belongs to its chold parts
           hasSubComponents = getSubComponents(subList, level+1, compName) 
           if (!hasSubComponents )
-           puts "adding part name=" + compName.to_s + ",subAssembly=" + subAssemblyName.to_s + " level=" + level.to_s  + " since level=" + (level+1).to_s + " has no subcomponents" if $verboseComponentDiscovery
-           puts "+++++++++++++++++++++++++++" if $verboseComponentDiscovery
+           puts "adding part name=" + compName.to_s + ",subAssembly=" + subAssemblyName.to_s + " level=" + level.to_s  + " since level=" + (level+1).to_s + " has no subcomponents" if CutList.verboseComponentDiscovery
+           puts "+++++++++++++++++++++++++++" if CutList.verboseComponentDiscovery
             ### allows names with - + at start etc
             name = " "+compName
             
@@ -432,21 +432,21 @@ class Reporter
               @solidPartList.add( solidPart )
             end  ##if
           else
-            puts "skipping partname=" + compName.to_s + " at level=" + level.to_s  + " since level=" + (level+1).to_s + " has subcomponents" if $verboseComponentDiscovery
-            puts "--------------------------" if $verboseComponentDiscovery
+            puts "skipping partname=" + compName.to_s + " at level=" + level.to_s  + " since level=" + (level+1).to_s + " has subcomponents" if CutList.verboseComponentDiscovery
+            puts "--------------------------" if CutList.verboseComponentDiscovery
           end
           # if the level below had no subcomponents, then we just added this part at this level, so mark this level as having components
           # if the level below us had subcomponents, then so must this one by transitiveness, even if none specifically
           # existed at this level ( there could be nested top level components), so in either case we set the level to have components
           levelHasComponents = true
         #else
-          #puts "skipping entityList element: " " type=" + c.typename.to_s + " inSelection=" + inSelection.to_s + " level=" + level.to_s + " visible=" + c.layer.visible?.to_s if $verboseComponentDiscovery
+          #puts "skipping entityList element: " " type=" + c.typename.to_s + " inSelection=" + inSelection.to_s + " level=" + level.to_s + " visible=" + c.layer.visible?.to_s if CutList.verboseComponentDiscovery
         end
       #else
-        #puts "skipping entityList element: " " type=" + c.typename.to_s + " inSelection=" + inSelection.to_s + " level=" + level.to_s + " visible=" + c.layer.visible?.to_s if $verboseComponentDiscovery
+        #puts "skipping entityList element: " " type=" + c.typename.to_s + " inSelection=" + inSelection.to_s + " level=" + level.to_s + " visible=" + c.layer.visible?.to_s if CutList.verboseComponentDiscovery
       end#if
     end#for c
-    puts "returning levelHasSubcomponents=" + levelHasComponents.to_s + " for level=" + level.to_s if $verboseComponentDiscovery
+    puts "returning levelHasSubcomponents=" + levelHasComponents.to_s + " for level=" + level.to_s if CutList.verboseComponentDiscovery
     return levelHasComponents
   end #getSubComponents
 
@@ -577,13 +577,13 @@ class Reporter
     Sketchup::set_status_text(" ", SB_VCB_VALUE)
 
     #main work of deriving the components from the selection of the model. This updates @solidPartList and @sheetPartList the components and sheet good lists respectively
-    puts "Component Discovery start ---->" if $verboseComponentDiscovery
+    puts "Component Discovery start ---->" if CutList.verboseComponentDiscovery
     #getSubComponents(entities,1, @mname)
     #DEBUG
     # pass the selection, not the entities
     getSubComponents(selection,1, @mname)
     #DEBUG
-    puts "Component Discovery end <----" if $verboseComponentDiscovery
+    puts "Component Discovery end <----" if CutList.verboseComponentDiscovery
     
     # if no components selected or no parts then exit...
     if ( @solidPartList.empty? && @sheetPartList.empty? && @partList.empty?)

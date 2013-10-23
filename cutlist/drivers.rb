@@ -282,12 +282,11 @@ class HtmlLayoutDriver < HtmlOutputDriver
       renderLayoutBoards(@layoutSheets,"Sheets") 
     end
     #debug
-    puts "unplacedParts is nil" if (@unPlacedParts == nil ) && $verbose1
-    puts "unplacedParts is empty" if  (@unPlacedParts != nil ) && (@unPlacedParts.empty? ) && $verbose1
-    #debug
+    puts "unplacedParts is nil" if (@unPlacedParts == nil ) && CutList.verbose1
+    puts "unplacedParts is empty" if  (@unPlacedParts != nil ) && (@unPlacedParts.empty? ) && CutList.verbose1
     #display any uplaced parts
     if @unPlacedParts != nil  && !@unPlacedParts.empty?
-      puts "unplaced parts list has " + @unPlacedParts.getList.length.to_s + " entries" if $verbose1
+      puts "unplaced parts list has " + @unPlacedParts.getList.length.to_s + " entries" if CutList.verbose1
       showUnPlacedParts(@unPlacedParts)
     end
     endPage

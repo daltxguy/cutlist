@@ -215,7 +215,7 @@ class HtmlLayoutRenderer  < LayoutRenderer
     labely = y-20
     # a board starts a new offset if it the 2nd board in a section\
     # if it is a new section, then the first board is not offset.
-    puts "x1=" + x.to_s + " y1=" + y.to_s + " labely1=" + labely.to_s + " offsetY1=" + @offsetY.to_s if $verbose
+    puts "x1=" + x.to_s + " y1=" + y.to_s + " labely1=" + labely.to_s + " offsetY1=" + @offsetY.to_s if CutList.verbose
     # once we have at least one board, the newSection flag is turned off
     # If this board is not part of the new section ( in which the title and the board are placed in the same container)
     # then start a new page now before adding the board
@@ -229,7 +229,7 @@ class HtmlLayoutRenderer  < LayoutRenderer
     end
     y = offsetY(y)
     labely = offsetY(labely)
-    puts "x2=" + x.to_s + " y2=" + y.to_s + " labely1=" + labely.to_s + " offsetY2=" + @offsetY.to_s if $verbose
+    puts "x2=" + x.to_s + " y2=" + y.to_s + " labely1=" + labely.to_s + " offsetY2=" + @offsetY.to_s if CutList.verbose
     # put each board in its own cell so it becomes scrollable
     #html += "cutlistLayout.htm += \'<div style=\"position:relative;width:#{length+50}px;height:#{height+50}px;\"><table cellpadding=\"0\" cellspacing=\"0\"><tr><td>\';"
     html += setColor(color)
@@ -398,7 +398,7 @@ class HtmlLayoutRenderer  < LayoutRenderer
     html += "cutlistLayout.cnv.className = \"graphicScreen\";"
     html += "cutlistLayout.cnv.style.fontSize=0;"
     html += "cutlistLayout.cont.appendChild(cutlistLayout.cnv);"
-    puts "Creating div=" + contName + " with subdiv=" + divName if $verbose1
+    puts "Creating div=" + contName + " with subdiv=" + divName if CutList.verbose1
     
     # Make another div within the layoutDiv for the printing html
     divPrintName = "divPrint" + @divNumber.to_s
@@ -407,7 +407,7 @@ class HtmlLayoutRenderer  < LayoutRenderer
     html += "cutlistLayout.cnvPrint.className = \"graphicPrint\";"
     html += "cutlistLayout.cnvPrint.style.fontSize=0;"
     html += "cutlistLayout.cont.appendChild(cutlistLayout.cnvPrint);"
-    puts "Creating Print div=" + contName + " with subdiv=" + divPrintName if $verbose1
+    puts "Creating Print div=" + contName + " with subdiv=" + divPrintName if CutList.verbose1
     return html
   end
   
