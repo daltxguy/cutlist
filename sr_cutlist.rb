@@ -18,7 +18,7 @@ require 'extensions'
 module SteveR
 	module CutList
 		su_cutlist_extension = SketchupExtension.new "CutList",
-		"cutlist/CutListAndMaterials.rb"
+		"sr_cutlist/CutListAndMaterials.rb"
 
 		su_cutlist_extension.description = 
 		"Produce a materials list from your model and a layout" +

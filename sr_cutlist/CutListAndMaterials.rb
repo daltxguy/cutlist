@@ -127,12 +127,12 @@
 #                                              Modification to install plugin using SKU builtin plugin installer, distribution as .rbz
 #                4.1.7      July, 2013 - Wrap all code in private modules for sharing via 'Sketchup Extensions'
 #                4.1.8      Oct, 2013 - Fix print output for layout
-#                                           - add support for files and paths with extended charset
+#                                           - investigate support for files and paths with extended charset - version of ruby used by SU does not support opening files as UTF-16
 #                                           - replace global declarations of debug flags with private
 #------------------------------------------------------------------------------------------
 
 require 'sketchup'
-require 'cutlist/reporter'  # the gui classes to bring up the main menu
+require 'sr_cutlist/reporter'  # the gui classes to bring up the main menu
 
 module SteveR
 	module CutList
@@ -168,13 +168,13 @@ module SteveR
 # 		Add the plugin command to the Plugins menu
 # 		Add CutList main entry 
 # 		"Cut List" offers an html gui to select options and produce html and/or file output 
-		if( not $cutlist_plugin_loaded)  
+		if( not $sr_cutlist_plugin_loaded)  
 			plugins_menu = UI.menu("Plugins")
   
 			plugins_menu.add_item("Cut List") { CutList.cutlist_interactive_menu }
 		end 
 
-		$cutlist_plugin_loaded = true
+		$sr_cutlist_plugin_loaded = true
 	end
 end
 #-----------------------------------------------------------------------------

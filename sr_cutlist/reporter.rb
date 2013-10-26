@@ -1,11 +1,11 @@
-require 'cutlist/cutlistutl.rb'
-require 'cutlist/layout.rb'
-require 'cutlist/boards.rb'
-require 'cutlist/parts.rb'
-require 'cutlist/drivers.rb'
-require 'cutlist/gui.rb'
-require 'cutlist/display.rb'
-require 'cutlist/renderers.rb'
+require 'sr_cutlist/cutlistutl.rb'
+require 'sr_cutlist/layout.rb'
+require 'sr_cutlist/boards.rb'
+require 'sr_cutlist/parts.rb'
+require 'sr_cutlist/drivers.rb'
+require 'sr_cutlist/gui.rb'
+require 'sr_cutlist/display.rb'
+require 'sr_cutlist/renderers.rb'
 
 module SteveR
 	module CutList
