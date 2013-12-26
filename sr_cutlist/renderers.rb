@@ -580,15 +580,27 @@ class FileRenderer < Renderer
   def initialize(modelName)
     # call any intialisation required for the base class
     super(modelName)
-    locale = Sketchup.get_locale
-    puts "locale=" + locale
-    if ( locale == 'en-US' ||
-         locale == 'en-GB' )
-      # The following line, if uncommented, uses tab characters instead of ',' as the delimiter
-      #@delimiter = "\ci"
+    
+    # note that get_locale gets only the sketchup language
+    # which is a limited set. If the Sketchup language does
+    # not match the OS language, then the fallback is to use
+    # en-US (so, if a user is running OS in Swedish but there is no
+    # Swedish version of Sketchup, they will be using en-US anyway.)
+    # This makes choice of separator based on get_local unreliable
+    # So, this has been changed to use a local utility which uses
+    # a different method to determine the 'locale' based on the way
+    # that sketchup selects the decimal to be used on length outputs
+    sketchupLocale = Sketchup.get_locale
+    puts "Sketchup locale=" + sketchupLocale
+    cutlistLocale = CutList::decimalNotation
+    if ( cutlistLocale == "."  )
+      # The following line, if uncommented, uses ',' characters instead of tab as the delimiter
       @delimiter = ","
+      puts "CSV delimiter is \",\""
+      #@delimiter = "\ci"
     else
       @delimiter = ";"
+      puts "CSV delimiter is \";\""
     end
   end
 

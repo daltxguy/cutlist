@@ -11,6 +11,8 @@
 # base classes.
 module SteveR
 	module CutList
+	        @@decimalNotation = ""
+		
 		# add a method to return if the current model units is metric
 		def CutList.metricModel? 
 		  model = Sketchup.active_model
@@ -27,6 +29,56 @@ module SteveR
 		  return (unit==4)
 		end
 	  
+		# Even if the Sketchup language indicates English 
+		# this may not mean that the decimal notation is the English version
+		# (where decimal is represented by the '.'. This is because Sketchup
+		# defaults to english if the version of Sketchup does not match the
+		# language of the operating system. This makes the language of Sketchup
+		# unreliable as an indicator of which notation to use.
+		# Instead we provide a utility which does a quick check of how Sketchup
+		# outputs decimals when converting an internal measurement to to_s notation,.
+		# which does seem to be reliable.
+		def CutList.initialiseDecimalNotation
+			# create a temporary component in the model
+			entities = Sketchup.active_model.entities
+			definitions = Sketchup.active_model.definitions[0]
+			@@decimalNotation = "." if definitions == NIL 
+			transformation = Geom::Transformation.new([0,0,0])
+			
+			# create the temporary component instance
+			componentInstance = entities.add_instance(definitions, transformation)
+			
+			# get the bounding box and arbitrarily use the width value, create a length string out of it
+			boundingBox = componentInstance.definition.bounds
+			width = boundingBox.width.inch
+			widthString = width.to_l.to_s
+			puts "notation test string = " + widthString
+			
+			# The pattern tests the width string for a "," decimal
+			# Set the decimal notation to the same character found in the test string
+			pattern = /(\d+)(\,)(\d+)/
+			match = widthString.match pattern
+			if (match)
+				puts "Setting decimal notation to European"
+				@@decimalNotation = ","
+			else
+				puts "Setting decimal notation to en-US"
+				@@decimalNotation = "."
+			end
+			
+			# remove the temporary component instance
+			entities.erase_entities(componentInstance)
+		end
+		
+		def CutList.decimalNotationInitialised?
+			@@decimalNotation != ""
+		end
+	    
+		def CutList.decimalNotation
+			CutList::initialiseDecimalNotation if !CutList::decimalNotationInitialised? 
+			@@decimalNotation
+		end
+		
 		# method to round a Float to x digits
 		def CutList.float_round_to(x, float)
 			(float * 10**x).round.to_f / 10**x
@@ -101,6 +153,21 @@ module SteveR
 		## DEBUG
 		     end
 		     return val
+		end
+	     
+		def CutList.decimal_to_comma(string)
+		# convert english numerical represention of decimal "." to european "," if required
+			pattern = /(\d+)(\.)(\d+)/
+			match = string.match pattern
+			if (match )
+				val = string.gsub(/[.]/,"#{CutList::decimalNotation}")
+				#DEBUG
+				#puts "decimal_to_comma: " + string + " converted to " + val
+				#DEBUG
+				return val
+			else
+				return string
+			end
 		end
 	     
 		#method so that we can reference the definition from which a 

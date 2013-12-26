@@ -129,6 +129,9 @@
 #                4.1.8      Oct, 2013 - Fix print output for layout
 #                                           - investigate support for files and paths with extended charset - version of ruby used by SU does not support opening files as UTF-16
 #                                           - replace global declarations of debug flags with private
+#                4.1.9      Dec, 2013 - More robust decision making for determining correct decimal character  and csb separator for international users
+#                                           - do not select parts of a dynamic component which are currently hidden
+#                                           - set window sizes and location different from defaults to ensure it is centered in the screen and away from menus
 #------------------------------------------------------------------------------------------
 
 require 'sketchup'

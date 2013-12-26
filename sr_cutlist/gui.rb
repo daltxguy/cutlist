@@ -14,7 +14,7 @@ class GuiBase
   end
   
   #base title used for all html pages - to indicate the version of cutlist being used.
-  @@title = "Cut List v4.1.8"
+  @@title = "Cut List v4.1.9"
   
   # relative location of the cutlist input html page
   @@cutlistui_location = '/cutlistui.html'
@@ -56,7 +56,9 @@ end
 #-----------------------------------------------------------------------------
 class WebGui < GuiBase
   def openDialog
-    @dlg = UI::WebDialog.new(getVersionHtmlTitle, true)
+    @dlg = UI::WebDialog.new(getVersionHtmlTitle, true, nil, 750, 800, 230, 150, true)
+#    @dlg.set_position(150,150)
+#    @dlg.set_size(600,550)
     @dlg.set_file( File.dirname(__FILE__)+getUiHtmlLocation)
   end
   
@@ -261,9 +263,9 @@ class ResultGui < GuiBase
   
   def openDialog
     @cutlistWindowTitle = getVersionHtmlTitle + " - " + " Cutlist" + getProjectLabelPrefix + @modelName
-    @resDialog = UI::WebDialog.new(@cutlistWindowTitle, true)
+    @resDialog = UI::WebDialog.new(@cutlistWindowTitle, true, nil, 1000, 850, 250, 150, true) 
     @resDialog.set_file( File.dirname(__FILE__)+getResultHtmlLocation)
-    @resDialog.set_position(150,150)
+    #@resDialog.set_position(150,150)
   end
   
   def addCallbacks
@@ -288,9 +290,9 @@ class LayoutGui < ResultGui
   
   def openDialog
     @layoutWindowTitle = getVersionHtmlTitle + " - " + "Layout" + getProjectLabelPrefix + @modelName
-    @resDialog = UI::WebDialog.new(@layoutWindowTitle, true)
+    @resDialog = UI::WebDialog.new(@layoutWindowTitle, true, nil, 1000, 900, 300, 150, true)
     @resDialog.set_file( File.dirname(__FILE__)+getResultHtmlLocation)
-    @resDialog.set_position(200,200)
+    #@resDialog.set_position(200,200)
   end
   
   def addCallbacks

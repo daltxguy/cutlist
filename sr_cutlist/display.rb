@@ -114,7 +114,14 @@ class Display < Display_class
       cols[3]=c.getLengthString
       cols[4]=c.getWidthString
       cols[5]=c.getThicknessString
-      cols[6]=c.getBoardFeet.to_s
+      # the next  line is modified specifically for european users who default to an English version
+      # of Sketchup - as Sketchup does not seem to convert these numericals to have comma as the decimal
+      # When I find a way to automatically discover which way the user needs to have this, then this can
+      # be replaced with some external check - or else decimal to comma can return the string 
+      # unchanged.
+      #cols[6]=c.getBoardFeet.to_s
+      cols[6]=CutList::decimal_to_comma(c.getBoardFeet.to_s)
+      
       cols[7]=c.getMaterial
       component = component + getRow(cols)
       ### gives sub-part numbers to same named compos; last = total
@@ -161,7 +168,13 @@ class Display < Display_class
       component = component + getTitle(getAmountTitleName())
       cols = Array.new
       tempFloat = CutList::float_round_to(roundToNumOfDigits, @totalBF)
-      cols[0] = tempFloat.to_s
+      # the next  line is modified specifically for european users who default to an English version
+      # of Sketchup - as Sketchup does not seem to convert these numericals to have comma as the decimal
+      # When I find a way to automatically discover which way the user needs to have this, then this can
+      # be replaced with some external check - or else decimal to comma can return the string 
+      # unchanged.
+      #cols[0] = tempFloat.to_s
+      cols[0] = CutList::decimal_to_comma(tempFloat.to_s)
       component = component + getRow(cols)
       component = component + getFooterRow()
       component = component + getBlankLine()
@@ -176,7 +189,13 @@ class Display < Display_class
         cols = Array.new
         cols[0] = d[0]
 	tempFloat =  CutList::float_round_to(roundToNumOfDigits, d[1])
-        cols[1] = tempFloat.to_s
+        # the next  line is modified specifically for european users who default to an English version
+	# of Sketchup - as Sketchup does not seem to convert these numericals to have comma as the decimal
+	# When I find a way to automatically discover which way the user needs to have this, then this can
+        # be replaced with some external check - or else decimal to comma can return the string 
+        # unchanged.
+        #cols[1] = tempFloat.to_s
+        cols[1] = CutList::decimal_to_comma(tempFloat.to_s)
         component = component + getRow(cols)
       end ## end for
       component = component + getFooterRow()
@@ -238,9 +257,18 @@ class CompactDisplay < Display
       cols[3]=c.getLengthString
       cols[4]=c.getWidthString
       cols[5]=c.getThicknessString
-      cols[6]=c.getBoardFeet.to_s
-      cols[7]=((c.getBoardFeet)*(partCount)).to_s
-      cols[8]=((c.getTotalLength)*(partCount)).to_s
+      # the next three lines are modified specifically for european users who default to an English version
+      # of Sketchup - as Sketchup does not seem to convert these numericals to have comma as the decimal
+      # When I find a way to automatically discover which way the user needs to have this, then this can
+      # be replaced with some external check - or else decimal to comma can return the string 
+      # unchanged.
+      #cols[6]=c.getBoardFeet.to_s
+      #cols[7]=((c.getBoardFeet)*(partCount)).to_s
+      #cols[8]=((c.getTotalLength)*(partCount)).to_s
+      cols[6]=CutList::decimal_to_comma(c.getBoardFeet.to_s)
+      cols[7]=CutList::decimal_to_comma(((c.getBoardFeet)*(partCount)).to_s)
+      cols[8]=CutList::decimal_to_comma(((c.getTotalLength)*(partCount)).to_s)
+      
       cols[9]=c.getMaterial
       row = getRow(cols)
       lastPart = [c.getName,c.getLengthString,c.getWidthString,c.getThicknessString, c.getMaterial]
