@@ -338,7 +338,7 @@ class Reporter
     for c in entityList
       inSelection = selection.contains? c
       #Sub components do not appear as part of the selection so let them through but only look at visible sub-components
-      if ( (inSelection || level>1) && c.layer.visible?)
+      if ( (inSelection || level>1) && c.layer.visible? && !c.hidden?)
         
         if c.typename == "ComponentInstance" || c.typename == "Group"
           # get the name of the component or group or try the inferred name based on its parent if it is a group with no name
