@@ -23,8 +23,8 @@ module SteveR
 		su_cutlist_extension.description = 
 		"Produce a materials list from your model and a layout" +
 		" of the parts on material of selectable sizes." 
-		su_cutlist_extension.version = "4.1.9"
-		su_cutlist_extension.copyright = "2013"
+		su_cutlist_extension.version = "4.1.10"
+		su_cutlist_extension.copyright = "2014"
 		su_cutlist_extension.creator = "S. Racz"
 
 		Sketchup.register_extension su_cutlist_extension, true

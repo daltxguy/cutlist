@@ -39,17 +39,47 @@ module SteveR
 		# outputs decimals when converting an internal measurement to to_s notation,.
 		# which does seem to be reliable.
 		def CutList.initialiseDecimalNotation
+			#initialise the class global value for the decimal character
+			# and then inspect further to see if this is correct or if
+			# it should be the "," character
+			@@decimalNotation = "." 
+			
 			# create a temporary component in the model
 			entities = Sketchup.active_model.entities
 			definitions = Sketchup.active_model.definitions[0]
-			@@decimalNotation = "." if definitions == NIL 
+			if definitions == NIL
+				# if there are no definitions, this method won't work. Use the default value
+				puts "CutList::initialiseDecimalNotation - no component definitions"
+				puts "Setting decimal notation to en-US"
+				return
+			end
+			
 			transformation = Geom::Transformation.new([0,0,0])
 			
-			# create the temporary component instance
+			# create the temporary component (or group) instance
 			componentInstance = entities.add_instance(definitions, transformation)
+
+			# get the bounding box of the created instance
+			if componentInstance.respond_to? "definition"
+			     boundingBox = componentInstance.definition.bounds
+			else
+				# is this a group entity? If so, then use our private method to find the definition
+				if componentInstance.typename == "Group"
+					group_definition = CutList::group_definition(componentInstance)
+					boundingBox = group_definition.bounds
+					puts "CutList::initialiseDecimalNotation - using bounding box for group"
+				else
+					# definitions exist but it is neither component nor group
+					# unexpected - but return the default in this case as we can't check any more
+					# remove the temporary component instance we created above
+					entities.erase_entities(componentInstance)
+					puts "CutList::initialiseDecimalNotation - no components or groups"
+					puts "Setting decimal notation to en-US"
+					return
+				end
+			end
 			
-			# get the bounding box and arbitrarily use the width value, create a length string out of it
-			boundingBox = componentInstance.definition.bounds
+			# using our bounding box, arbitrarily use the width value, create a length string out of it
 			width = boundingBox.width.inch
 			widthString = width.to_l.to_s
 			puts "notation test string = " + widthString
