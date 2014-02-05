@@ -150,7 +150,7 @@ module SteveR
 		end
 		
 		def CutList.verboseComponentDiscovery
-			false # trace model entity list traversal only
+			true # trace model entity list traversal only
 		end
 		
 		def CutList.verbosePartPlacement

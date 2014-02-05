@@ -8,6 +8,8 @@ class Display_class
   def initialize(inRenderer, inMetric)
     @renderer = inRenderer
     @metric = inMetric
+    @roundToNumOfDigits = 2
+    @roundToNumOfDigits = 4 if(@metric)
   end ## end initialize
 
   def getTitle(title)
@@ -151,8 +153,6 @@ class Display < Display_class
     @materialList = []
     @totalBF = 0
     @totalLength = 0
-    roundToNumOfDigits = 2
-    roundToNumOfDigits = 4 if(@metric)
     tempFloat = 0
       
     component = ""
@@ -167,7 +167,7 @@ class Display < Display_class
     if(isAmountEnabled())
       component = component + getTitle(getAmountTitleName())
       cols = Array.new
-      tempFloat = CutList::float_round_to(roundToNumOfDigits, @totalBF)
+      tempFloat = CutList::float_round_to(@roundToNumOfDigits, @totalBF)
       # the next  line is modified specifically for european users who default to an English version
       # of Sketchup - as Sketchup does not seem to convert these numericals to have comma as the decimal
       # When I find a way to automatically discover which way the user needs to have this, then this can
@@ -188,7 +188,7 @@ class Display < Display_class
       for d in @materialList
         cols = Array.new
         cols[0] = d[0]
-	tempFloat =  CutList::float_round_to(roundToNumOfDigits, d[1])
+	tempFloat =  CutList::float_round_to(@roundToNumOfDigits, d[1])
         # the next  line is modified specifically for european users who default to an English version
 	# of Sketchup - as Sketchup does not seem to convert these numericals to have comma as the decimal
 	# When I find a way to automatically discover which way the user needs to have this, then this can
@@ -266,8 +266,12 @@ class CompactDisplay < Display
       #cols[7]=((c.getBoardFeet)*(partCount)).to_s
       #cols[8]=((c.getTotalLength)*(partCount)).to_s
       cols[6]=CutList::decimal_to_comma(c.getBoardFeet.to_s)
-      cols[7]=CutList::decimal_to_comma(((c.getBoardFeet)*(partCount)).to_s)
-      cols[8]=CutList::decimal_to_comma(((c.getTotalLength)*(partCount)).to_s)
+      # Multiply the quantity of the same part by the board feet and lengths to get the totals for that part
+      # The results will be a float so needs to be rounded to produce reasonable sized decimal numbers
+      roundedBoardFeetTotal =  CutList::float_round_to(@roundToNumOfDigits,(c.getBoardFeet * partCount))
+      roundedTotalLengthTotal =  CutList::float_round_to(@roundToNumOfDigits,(c.getTotalLength * partCount))
+      cols[7]=CutList::decimal_to_comma(roundedBoardFeetTotal.to_s)
+      cols[8]=CutList::decimal_to_comma(roundedTotalLengthTotal.to_s)
       
       cols[9]=c.getMaterial
       row = getRow(cols)

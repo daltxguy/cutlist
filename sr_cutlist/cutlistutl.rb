@@ -220,6 +220,12 @@ module SteveR
 		    }  
 		    return nil
 		end
+	    
+		# Returns the current Cutlist Version 
+		def  CutList.version
+			return "v4.1.11"
+		end
+	    
 	     
 
 	end # module CutLlist
