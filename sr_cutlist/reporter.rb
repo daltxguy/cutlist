@@ -201,7 +201,7 @@ class Reporter
   end
   
   # does the main work of the reporter class ie: this is the mainline for the cutlist plugin
-  def main    
+  def main  
     # derive the component set required for cutlist from this model. Method components() establishes the working cutlist database
     if ( components() != nil )
       # produce a layout if requested. Layout() creates the necessary database for layout output based on the cutlist database
@@ -214,6 +214,11 @@ class Reporter
   end
   
   def layout
+      ### show VCB and status info...
+      Sketchup::set_status_text(("CutList layout generation..." ), SB_PROMPT)
+      Sketchup::set_status_text(" ", SB_VCB_LABEL)
+      Sketchup::set_status_text(" ", SB_VCB_VALUE)
+
       # Note:We reference the show parts and show sheet parts options here instead of on the output for efficiency. cutting down on the
       # generation of layout speeds up the output. The output will just display whatever was generated here.
       # determine if we need to create a layout for solid parts
@@ -255,7 +260,8 @@ class Reporter
           @unplacedPartsList +(unplacedPartsList) if unplacedPartsList != nil
           puts "Unplaced Sheet Parts during layout=" + unplacedPartsList.count.to_s if  CutList.verbosePartPlacement
         }
-      end
+     end
+     Sketchup::set_status_text(("" ), SB_PROMPT)
   end
         
   ### Get the material assigned faces within a component if it is not assigned at
@@ -508,102 +514,102 @@ class Reporter
   # and parts in the @partList
   #-----------------------------------------------------------------------------
   def components    
-    # create a new parts list
-    @partList = PartList.new()
+	# create a new parts list
+	@partList = PartList.new()
     
-    # create the new Solid part list
-    @solidPartList = SolidPartList.new()
+	# create the new Solid part list
+	@solidPartList = SolidPartList.new()
     
-    # create the new Sheet part list
-    @sheetPartList = SheetPartList.new()
+	# create the new Sheet part list
+	@sheetPartList = SheetPartList.new()
     
-    # select the current model
-    model = Sketchup.active_model
+	# select the current model
+	model = Sketchup.active_model
     
-    # get the parts of the model selected
-    selection = model.selection
-    # start undo...
-    model.start_operation "undo"
+	# get the parts of the model selected
+	selection = model.selection
 
-    # If the current selection is empty, then assume that the entire  model is to be selected.
-    # toggle the selection to select all, if still empty, then  display a message
-    if ( selection.empty? )
-      # try selecting all
-      # confirm with the user that this is ok
-      if ( UI.messagebox("Nothing was selected from the model.\nDo you want to select all visible? ",  MB_OKCANCEL) == 1 )
+	# If the current selection is empty, then assume that the entire  model is to be selected.
+	# toggle the selection to select all, if still empty, then  display a message
+	if ( selection.empty? )
+		# try selecting all
+		# confirm with the user that this is ok
+		if ( UI.messagebox("Nothing was selected from the model.\nDo you want to select all visible? ",  MB_OKCANCEL) == 1 )
+
+			# inverse the empty selection to select all
+			model = invert_selection!(model)
+			@selection_inverted = true
+
+			# get the selection from the model again
+			selection = model.selection
         
-        # inverse the empty selection to select all
-        model = invert_selection!(model)
-        @selection_inverted = true
-
-        # get the selection from the model again
-        selection = model.selection
+			#remove any entities from the selection which are not visible
+			selection.each { |entity| selection.toggle( entity) if !entity.layer.visible? }
         
-        #remove any entities from the selection which are not visible
-        selection.each { |entity| selection.toggle( entity) if !entity.layer.visible? }
-        
-        # if it's still empty, then there must be nothing in the model.
-        if ( selection.empty? )
-          UI.beep
-          UI.messagebox("Your model is empty or no entities are visible.\nNo Cutlist generated.")
-          return nil
-        end
-      else
-        # user cancelled from the select all request
-        return nil
-      end
-    end
+			# if it's still empty, then there must be nothing in the model.
+			if ( selection.empty? )
+				UI.beep
+				UI.messagebox("Your model is empty or no entities are visible.\nNo Cutlist generated.")
+				#model.abort_operation 
+				return nil
+			end
+		else
+			# user cancelled from the select all request
+			return nil
+		end
+	end
 
-    entities = model.entities
-    @mname = model.title
+	entities = model.entities
+	@mname = model.title
 
-    # check model has a directory path, so we know where to store the output 
-    mpath = model.path
-    puts "Model path=" + model.path.to_s
-    if mpath == ""
-      UI.beep
-      UI.messagebox("You must save the 'Untitled' new model \nbefore making a Component Report !\nNo Cutlist generated.")
-      return nil
-    end
+	# check model has a directory path, so we know where to store the output 
+	mpath = model.path
+	puts "Model path=" + model.path.to_s
+	if mpath == ""
+		UI.beep
+		UI.messagebox("You must save the 'Untitled' new model \nbefore making a Component Report !\nNo Cutlist generated.")
+		return nil
+	end
      
-    # now get the actually directory from the path, so we can put our files in the same directory.
+	# now get the actually directory from the path, so we can put our files in the same directory.
      
-    @mpath = File.dirname(mpath)
-    puts "directory= " + @mpath.to_s
+	@mpath = File.dirname(mpath)
+	puts "directory= " + @mpath.to_s
 
-    ### show VCB and status info...
-    Sketchup::set_status_text(("CUT LIST GENERATION..." ), SB_PROMPT)
-    Sketchup::set_status_text(" ", SB_VCB_LABEL)
-    Sketchup::set_status_text(" ", SB_VCB_VALUE)
+	### show VCB and status info...
+	Sketchup::set_status_text(("CutList component discovery..." ), SB_PROMPT)
+	Sketchup::set_status_text(" ", SB_VCB_LABEL)
+	Sketchup::set_status_text(" ", SB_VCB_VALUE)
 
-    #main work of deriving the components from the selection of the model. This updates @solidPartList and @sheetPartList the components and sheet good lists respectively
-    puts "Component Discovery start ---->" if CutList.verboseComponentDiscovery
-    #getSubComponents(entities,1, @mname)
-    #DEBUG
-    # pass the selection, not the entities
-    getSubComponents(selection,1, @mname)
-    #DEBUG
-    puts "Component Discovery end <----" if CutList.verboseComponentDiscovery
+	#main work of deriving the components from the selection of the model. This updates @solidPartList and @sheetPartList the components and sheet good lists respectively
+	puts "Component Discovery start ---->" if CutList.verboseComponentDiscovery
+	# pass the selection, not the entities
+	getSubComponents(selection,1, @mname)
+	#DEBUG
+	puts "Component Discovery end <----" if CutList.verboseComponentDiscovery
     
-    # if no components selected or no parts then exit...
-    if ( @solidPartList.empty? && @sheetPartList.empty? && @partList.empty?)
-      UI.beep
-      UI.messagebox("No Components found in your model.\nYou must create a Component from your selection.\nClick on Help for more info.\nNo Cutlist will be generated.")
-      return nil
-    end
+	# if no components selected or no parts then exit...
+	if ( @solidPartList.empty? && @sheetPartList.empty? && @partList.empty?)
+		UI.beep
+		UI.messagebox("No Components found in your model.\nYou must create a Component from your selection.\nClick on Help for more info.\nNo Cutlist will be generated.")
+		Sketchup::set_status_text(("" ), SB_PROMPT)
+		return nil
+	end
     
-    #finally sort the solid component list and sheet list if the option was selected
-    if @@options[:cutlist_Options][:listAllSorted]
-      @solidPartList.sort
-      @sheetPartList.sort
-    end
+	#finally sort the solid component list and sheet list if the option was selected
+	if @@options[:cutlist_Options][:listAllSorted]
+		@solidPartList.sort
+		@sheetPartList.sort
+	end
     
-        # commit undo...
-    model.commit_operation
-
+      Sketchup::set_status_text(("" ), SB_PROMPT)
+      return true
   end # components
   
 def output
+      Sketchup::set_status_text(("CutList Output generation..." ), SB_PROMPT)
+      Sketchup::set_status_text(" ", SB_VCB_LABEL)
+      Sketchup::set_status_text(" ", SB_VCB_VALUE)
     ### HTML output ###
     if(@@options[:cutlist_Options][:printPage])
       cutlistHtml = HtmlOutputDriver.new(@@options[:cutlist_Options][:compactList],
@@ -668,7 +674,7 @@ def output
                                                                     @mpath)
       cutlistSvgLayoutHtml.run
     end
-
+    Sketchup::set_status_text(("" ), SB_PROMPT)
   end#def output
 
 end#class Reporter

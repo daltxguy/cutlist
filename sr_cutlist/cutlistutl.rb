@@ -57,68 +57,24 @@ module SteveR
 		# language of the operating system. This makes the language of Sketchup
 		# unreliable as an indicator of which notation to use.
 		# Instead we provide a utility which does a quick check of how Sketchup
-		# outputs decimals when converting an internal measurement to to_s notation,.
-		# which does seem to be reliable.
+		# outputs decimals when converting to_l notation,.
+		
+		#hack suggested by Thomas Thomassen (thomthom) from TT Library 2 / TT_Lib2 / locale.rb
+		def CutList.decimalSeparator
+			# If this raises an error the decimal separator is not '.'
+			'1.2'.to_l
+			return '.'
+		rescue
+			return ','
+		end	
+		
+		# initialise the decimal notation for the plugin as we use it often and, once determined, it will
+		# not change as it depends on  a combination of the language of Sketchup and language of the OS.
 		def CutList.initialiseDecimalNotation
-			#initialise the class global value for the decimal character
-			# and then inspect further to see if this is correct or if
-			# it should be the "," character
-			@@decimalNotation = "." 
-			
-			# create a temporary component in the model
-			entities = Sketchup.active_model.entities
-			definitions = Sketchup.active_model.definitions[0]
-			if definitions == NIL
-				# if there are no definitions, this method won't work. Use the default value
-				puts "CutList::initialiseDecimalNotation - no component definitions"
-				puts "Setting decimal notation to en-US"
-				return
-			end
-			
-			transformation = Geom::Transformation.new([0,0,0])
-			
-			# create the temporary component (or group) instance
-			componentInstance = entities.add_instance(definitions, transformation)
-
-			# get the bounding box of the created instance
-			if componentInstance.respond_to? "definition"
-			     boundingBox = componentInstance.definition.bounds
-			else
-				# is this a group entity? If so, then use our private method to find the definition
-				if componentInstance.typename == "Group"
-					group_definition = CutList::group_definition(componentInstance)
-					boundingBox = group_definition.bounds
-					puts "CutList::initialiseDecimalNotation - using bounding box for group"
-				else
-					# definitions exist but it is neither component nor group
-					# unexpected - but return the default in this case as we can't check any more
-					# remove the temporary component instance we created above
-					entities.erase_entities(componentInstance)
-					puts "CutList::initialiseDecimalNotation - no components or groups"
-					puts "Setting decimal notation to en-US"
-					return
-				end
-			end
-			
-			# using our bounding box, arbitrarily use the width value, create a length string out of it
-			width = boundingBox.width.inch
-			widthString = width.to_l.to_s
-			puts "notation test string = " + widthString
-			
-			# The pattern tests the width string for a "," decimal
-			# Set the decimal notation to the same character found in the test string
-			pattern = /(\d+)(\,)(\d+)/
-			match = widthString.match pattern
-			if (match)
-				puts "Setting decimal notation to European"
-				@@decimalNotation = ","
-			else
-				puts "Setting decimal notation to en-US"
-				@@decimalNotation = "."
-			end
-			
-			# remove the temporary component instance
-			entities.erase_entities(componentInstance)
+			@@decimalNotation = CutList.decimalSeparator
+			# output the result to the ruby window as part of the basic trace
+			puts "Setting decimal notation to " +
+			((@@decimalNotation == "." ) ?  "en-US" : "European" )
 		end
 		
 		def CutList.decimalNotationInitialised?
@@ -244,7 +200,7 @@ module SteveR
 	    
 		# Returns the current Cutlist Version 
 		def  CutList.version
-			return "v4.1.11"
+			return "v4.1.12"
 		end
 	    
 	     
