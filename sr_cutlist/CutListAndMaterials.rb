@@ -135,9 +135,9 @@
 #                4.1.10      Jan, 2014 - Repair a condition in which no output is produced if all components are groups
 #                4.1.11       Feb, 2014 - Add better support to determine comma separator for "." vs "," not based on language
 #                                            - repair some cases where rounding/truncation was not taking place
-#                4.1.12       Feb, 2014 - More efficient method of determining rounding, truncation
-#                                             - Another case where rounding/truncation was not being done
-#                                             - fix case where layout was not possible with no kerf and exact size board with nominal measurements
+#                4.1.12       Feb, 2014 - More efficient method of determining decimal notation  to use "." vs "," suggested by Trimble
+#                                            - Another case where rounding/truncation was not being done
+#                                            - fix case where layout was not possible with no kerf and exact size board with nominal measurements
 #                                                ( a part size accuracy issue during comparison in boards.rb:LayoutBoard.findBestFit )
 #
 #------------------------------------------------------------------------------------------
