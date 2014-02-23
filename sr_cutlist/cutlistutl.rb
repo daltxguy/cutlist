@@ -13,6 +13,27 @@ module SteveR
 	module CutList
 	        @@decimalNotation = ""
 		
+# 		determine amount of debugging output to the ruby console
+		def CutList.verbose1
+			false # minimal progress tracking
+		end
+		
+		def CutList.verbose
+			false # the whole enchilada - slows down processing considerably - may crash sketchup - use sparingly. turn CutList.verbose on around desired areas
+		end
+		
+		def CutList.verboseComponentDiscovery
+			false # trace model entity list traversal only
+		end
+		
+		def CutList.verbosePartPlacement
+			false #trace parts placement for layout only
+		end
+		
+		def CutList.verboseParameters
+			false # trace parameter passing to/from the GUI
+		end
+		
 		# add a method to return if the current model units is metric
 		def CutList.metricModel? 
 		  model = Sketchup.active_model

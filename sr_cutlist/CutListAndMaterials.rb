@@ -132,6 +132,14 @@
 #                4.1.9      Dec, 2013 - More robust decision making for determining correct decimal character  and csb separator for international users
 #                                           - do not select parts of a dynamic component which are currently hidden
 #                                           - set window sizes and location different from defaults to ensure it is centered in the screen and away from menus
+#                4.1.10      Jan, 2014 - Repair a condition in which no output is produced if all components are groups
+#                4.1.11       Feb, 2014 - Add better support to determine comma separator for "." vs "," not based on language
+#                                            - repair some cases where rounding/truncation was not taking place
+#                4.1.12       Feb, 2014 - More efficient method of determining rounding, truncation
+#                                             - Another case where rounding/truncation was not being done
+#                                             - fix case where layout was not possible with no kerf and exact size board with nominal measurements
+#                                                ( a part size accuracy issue during comparison in boards.rb:LayoutBoard.findBestFit )
+#
 #------------------------------------------------------------------------------------------
 
 require 'sketchup'
@@ -139,28 +147,7 @@ require 'sr_cutlist/reporter'  # the gui classes to bring up the main menu
 
 module SteveR
 	module CutList
-
-# 		determine amount of debugging output to the ruby console
-		def CutList.verbose1
-			false # minimal progress tracking
-		end
-		
-		def CutList.verbose
-			false # the whole enchilada - slows down processing considerably - may crash sketchup - use sparingly. turn CutList.verbose on around desired areas
-		end
-		
-		def CutList.verboseComponentDiscovery
-			true # trace model entity list traversal only
-		end
-		
-		def CutList.verbosePartPlacement
-			false #trace parts placement for layout only
-		end
-		
-		def CutList.verboseParameters
-			false # trace parameter passing to/from the GUI
-		end
-
+	
 # 		create a GUI instance that prompts for an interactive configuration, producing the requested output formats
 # 		This is the main menu invoked when the user selects the Cut List plugin menu item
 		def CutList.cutlist_interactive_menu

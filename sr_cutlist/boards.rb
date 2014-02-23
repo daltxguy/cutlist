@@ -787,9 +787,15 @@ class LayoutBoard
       puts "ll=" + node.rect[:length].to_l.to_s + "lw="  + node.rect[:width].to_l.to_s if CutList.verbose
       puts "pl=" + length.to_l.to_s + "pw=" + width.to_l.to_s if CutList.verbose
       # won't fit if length is too short
-      return nil if length > node.rect[:length]
+      
+      # Note: make the comparisons here after applying the length transformation.
+      # This gives the same level of accuracy as the model units - which is what is relevant for layout
+      # Otherwise, there may be inaccurate comparisons between internal numbers which have been
+      # subjected to scaling, multiplication etc which can make round numbers into floats thus preventing
+      # parts from fitting when by all practical measures, they do.
+      return nil if length.to_l > node.rect[:length].to_l
       # won't fit if width is too narrow
-      return nil if width > node.rect[:width]
+      return nil if width.to_l > node.rect[:width].to_l
       # fits, so return as a potential best fit
       return node
     end
