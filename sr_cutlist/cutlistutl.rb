@@ -206,8 +206,24 @@ module SteveR
 		def  CutList.version
 			return "v4.1.12"
 		end
-	    
-	     
+		
+		# Cutlist release year
+		def CutList.year
+			return "2014"
+		end	
+		
+		# Cutlist author
+		def CutList.author
+			return "S.Racz"
+		end	
+		
+		# Cutlist short description
+		def CutList.short_description
+			return "Produce a materials list from your model and a layout" +
+				  " of the parts on material of selectable sizes." 
+		end	
+
+
 
 	end # module CutLlist
 end # module SteveR
