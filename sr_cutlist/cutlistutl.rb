@@ -181,21 +181,25 @@ module SteveR
 		# group instance has been derived. 
 		# (Ideally) xtending the group definition and calling the method 'definition' would make this analagous to 
 		# 'definition' method of ComponentInstance
-		# However, this is not a nice way of doing it so instead we define a private method to get definition from a group entity
-		# Sketchup groups also have a component definition but it's not
-		# directly accessible  so we have to start from the model definitions and search
-		# looking for the entity which matches ours. Once found we can use it just like
-		# for Component Instance
+		# However, extending the group class is not a nice way of doing it so instead we define a private method to get definition from a group entity
+		# Sketchup groups also have a component definition but it's not directly accessible
+		# Per thomthom ( http://www.thomthom.net/thoughts/2012/02/definitions-and-instances-in-sketchup/ )
+		# the groups entities' parent should contain the definition but there is a Sketchup bug which must be worked
+		# around. This solution is taken directly from his suggested code
+		#Once found we can use it just like for Component Instance
 		def CutList.group_definition(group)
-		    definitions = Sketchup.active_model.definitions
-		    definitions.each { |definition|
-		      definition.instances.each { |instance|
-			if instance.typename=="Group" && instance == group
-			  return definition
+			# (i) group.entities.parent should return the definition of a group.
+			# But because of a SketchUp bug we must verify that group.entities.parent
+			# returns the correct definition. If the returned definition doesn't
+			# include our group instance then we must search through all the
+			# definitions to locate it.
+			if group.entities.parent.instances.include?(group)
+				return group.entities.parent
+			else
+				Sketchup.active_model.definitions.each { |definition|
+				return definition if definition.instances.include?(group)
+				}
 			end
-		      }
-		    }  
-		    return nil
 		end
 	    
 		# Returns the current Cutlist Version 

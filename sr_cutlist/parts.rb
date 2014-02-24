@@ -75,7 +75,7 @@ class CutListPart
      #puts "CutListPart - affirmative check for respond to bounding box for component"
     else
 	# is this a group entity? If so, then use our private method to find the definition
-	if c.typename == "Group"
+	if c.is_a?(Sketchup::Group)
 		group_definition = CutList::group_definition(c)
 		boundingBox = group_definition.bounds
 		#puts "CutListPart - affirmative check for respond to bounding box for group"
