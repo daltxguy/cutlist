@@ -158,13 +158,13 @@ module SteveR
 # 		Add the plugin command to the Plugins menu
 # 		Add CutList main entry 
 # 		"Cut List" offers an html gui to select options and produce html and/or file output 
-		if( not $sr_cutlist_plugin_loaded)  
+		unless file_loaded?( __FILE__ ) 
 			plugins_menu = UI.menu("Plugins")
   
 			plugins_menu.add_item("Cut List") { CutList.cutlist_interactive_menu }
 		end 
 
-		$sr_cutlist_plugin_loaded = true
+		file_loaded( __FILE__ )
 	end
 end
 #-----------------------------------------------------------------------------
