@@ -268,14 +268,14 @@ class Reporter
   ### the component level
   def getMaterial(component)
     bits = nil
-    if(component.typename == "ComponentInstance")
+    if component.is_a?(Sketchup::ComponentInstance)
       bits = component.definition.entities
-    elsif(component.typename == "Group")
+    elsif component.is_a?(Sketchup::Group)
       bits = component.entities
     end ##if
 
     for f in bits
-      if f.typename == "Face"
+      if f.is_a? (Sketchup::Face)
         materialClass = f.material
         if(materialClass!=nil)
           return materialClass.name
@@ -292,7 +292,7 @@ class Reporter
     definitions = Sketchup.active_model.definitions
     definitions.each { |definition|
       definition.instances.each { |instance|
-        if instance.typename=="Group" && instance == entity
+        if instance.is_a? (Sketchup::Group) && instance == entity
           #now go through this definition and see if there is an instance with a name, return it if found
           definition.instances.each { |i|
             if ( i.name != "" )
@@ -346,13 +346,13 @@ class Reporter
       #Sub components do not appear as part of the selection so let them through but only look at visible sub-components
       if ( (inSelection || level>1) && c.layer.visible? && !c.hidden?)
         
-        if c.typename == "ComponentInstance" || c.typename == "Group"
+        if c.is_a? (Sketchup::ComponentInstance) || c.is_a? (Sketchup::Group)
           # get the name of the component or group or try the inferred name based on its parent if it is a group with no name
           compName = nil
-          if(c.typename == "ComponentInstance")
+          if c.is_a? (Sketchup::ComponentInstance) 
             compName = c.definition.name
             puts "component instance with definition name=" + compName.to_s if CutList.verboseComponentDiscovery
-          elsif(c.typename == "Group")
+          elsif c.is_a? (Sketchup::Group)
             compName = c.name
             puts "group with name=" + compName.to_s if CutList.verboseComponentDiscovery
             if (compName == nil || compName == "" )
@@ -390,9 +390,9 @@ class Reporter
           
           # if it is not a hardware part, then for this component or group, go a level deeper to see if it has sub-components
           subList = nil
-          if(c.typename == "ComponentInstance")
+          if c.is_a? (Sketchup::ComponentInstance) 
             subList = c.definition.entities
-          elsif(c.typename == "Group")
+          elsif c.is_a? (Sketchup::Group)
             subList = c.entities
           end ##if
           
