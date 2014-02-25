@@ -284,40 +284,6 @@ class Reporter
     end
     return "Not assigned"
   end ##getMaterial
-
-  # check if this component is a group with an instance definition
-  # if so, then we can derive a name from the original definition if there is one  
-  def getGroupCopyName(entity)
-    name = ""
-    definitions = Sketchup.active_model.definitions
-    definitions.each { |definition|
-      definition.instances.each { |instance|
-        if instance.is_a? (Sketchup::Group) && instance == entity
-          #now go through this definition and see if there is an instance with a name, return it if found
-          definition.instances.each { |i|
-            if ( i.name != "" )
-              name = i.name
-              # now let's do it again but actually set the name of all instances to the one found if user oks this
-              if @askFirstTime
-                if ( UI.messagebox("Copied group parts found with no name. Ok to set to the same name as the master copy?",  MB_OKCANCEL) == 1 )
-                  @okToCopyName = true
-                else
-                  @okToCopyName = false
-                end
-                @askFirstTime = false
-              end
-              if @okToCopyName
-                definition.instances.each { |i| i.name = name }
-              end
-              break
-            end
-          }
-          return name
-        end
-      }
-    }    
-    return name
-  end
   
   #-----------------------------------------------------------------------------
   # The getSubComponent method is called recursively to derive the fundamental component parts of the model from all
@@ -356,8 +322,8 @@ class Reporter
             compName = c.name
             puts "group with name=" + compName.to_s if CutList.verboseComponentDiscovery
             if (compName == nil || compName == "" )
+		compName = CutList.group_definition(c).name
               #let's see if this is a copy of a group which might already have a name
-              compName = getGroupCopyName(c)
               if ( compName != nil && compName != "" )
                 puts "group had no name but is assigned name=" + compName.to_s + " based on its parent" if CutList.verboseComponentDiscovery
               end
