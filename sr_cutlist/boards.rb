@@ -410,7 +410,7 @@ class Board
     return ' bd.ft.' if !@metricVolume
   end
   def getBoardFeetString
-    string = getBoardFeet.to_s
+    string = CutList::decimal_to_comma(getBoardFeet.to_s)
     string += getBoardFeetUnitsString
     return string
   end
@@ -874,7 +874,7 @@ class LayoutBoard
   end
   
   def to_s
-    return @board.to_s + (' (' + getUsedAreaPercentage.to_s + '%)' if getUsedAreaPercentage != 0 )
+    return @board.to_s + (' (' + CutList::decimal_to_comma(getUsedAreaPercentage.to_s) + '%)' if getUsedAreaPercentage != 0 )
   end
   
 end #class LayourBoard

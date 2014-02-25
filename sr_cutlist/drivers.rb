@@ -310,12 +310,14 @@ class HtmlLayoutDriver < HtmlOutputDriver
       layoutBoards.each { |layoutBoard|
         @layoutBoardFeet += layoutBoard.board.getBoardFeet
       }
+      # Round off to a resonable float
+      @layoutBoardFeet = CutList::float_round_to(4, @layoutBoardFeet)
     end
   end
 
   def getTotalBoardFeetString( layoutBoards )
     if ( layoutBoards != nil && layoutBoards.length > 0 )
-      return "Total used for layout: " + @layoutBoardFeet.to_s + " " + ( layoutBoards[0].board.getBoardFeetUnitsString )
+      return "Total used for layout: " + CutList::decimal_to_comma(@layoutBoardFeet.to_s) + " " + ( layoutBoards[0].board.getBoardFeetUnitsString )
     else
       return ""
     end
@@ -336,7 +338,7 @@ class HtmlLayoutDriver < HtmlOutputDriver
   end
   
   def getTotalEfficiencyString
-    return "Efficiency = " + @totalEfficiency.to_s + "%"
+    return "Efficiency = " + CutList::decimal_to_comma(@totalEfficiency.to_s) + "%"
   end
   
   def renderBoard(layoutBoard)
