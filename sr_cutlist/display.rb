@@ -451,8 +451,8 @@ class ClpDisplay < Display
       # we do this by extending the integer class to convert to string values.
       ix = CutList::integer_to_fws(3,i) + "-" + CutList::integer_to_fws(2,ii)
       cols[0]=getPartPrefix()+ix
-      cols[1]=c.getSubAssemblyName
-      cols[2]=c.getName
+      cols[1]=CutList::string_to_clp(c.getSubAssemblyName)
+      cols[2]=CutList::string_to_clp(c.getName)
       cols[3]="1"
       # CutListPlus accepts all sketchup units except meters
       # If inches, then the inches symbol " needs to be stripped with CutList::string_to_clp since clp won't accept it - this is probably a CLP bug
@@ -556,8 +556,8 @@ class CompactClpDisplay < CompactDisplay
       end ##if
 
       cols[0]=getPartPrefix() + CutList::integer_to_fws(3,partId)
-      cols[1]=c.getSubAssemblyName
-      cols[2]=c.getName
+      cols[1]=CutList::string_to_clp(c.getSubAssemblyName)
+      cols[2]=CutList::string_to_clp(c.getName)
       cols[3]=partCount.to_s
       
       # CutListPlus accepts all sketchup units except meters
